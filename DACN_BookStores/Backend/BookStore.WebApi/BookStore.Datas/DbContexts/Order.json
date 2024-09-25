@@ -1,0 +1,77 @@
+[
+  {
+    "UserId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+    "Status":  3,
+    "TotalAmount": 200000
+  },
+  {
+    "UserId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+    "Status": 3,
+    "TotalAmount": 250000
+  },
+  {
+    "UserId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+    "Status": 3,
+    "TotalAmount": 300000
+  },
+  {
+    "UserId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+    "Status": 3,
+    "TotalAmount": 350000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 400000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 450000
+  },
+  {
+    "UserId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+    "Status": 3,
+    "TotalAmount": 500000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 550000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 600000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 650000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 700000
+  },
+  {
+    "UserId": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "Status": 3,
+    "TotalAmount": 750000
+  },
+  {
+    "UserId": "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+    "Status": 3,
+    "TotalAmount": 800000
+  },
+  {
+    "UserId": "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+    "Status": 3,
+    "TotalAmount": 850000
+  },
+  {
+    "UserId": "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+    "Status": 3,
+    "TotalAmount": 900000
+  }
+]

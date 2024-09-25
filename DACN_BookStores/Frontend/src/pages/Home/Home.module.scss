@@ -1,0 +1,42 @@
+.home-wrapper {
+    overflow: hidden;
+
+    .group-books {
+        float: left;
+    }
+}
+
+.section {
+    margin: 20px 0 54px;
+}
+
+.slider {
+    width: 873px;
+}
+
+.slider-container {
+    min-height: 0;
+    min-width: 0;
+    padding: 20px;
+}
+
+.slider-item-wrap {
+    position: relative;
+    max-width: 450px;
+    text-transform: uppercase;
+
+    .slider-item--desc {
+        position: absolute;
+        top: 50%;
+        left: 50px;
+        color: #fff;
+        transform: translateY(-50%);
+        font-size: 34px;
+    }
+}
+
+.poster {
+    img {
+        width: 100%;
+    }
+}

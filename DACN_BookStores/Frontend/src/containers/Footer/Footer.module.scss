@@ -1,0 +1,96 @@
+@import '~/styles/variables';
+
+.footer-wrapper {
+    height: 30rem;
+    margin-top: 3rem;
+    font-size: 14px;
+    border-top: 0.3rem solid red;
+    padding-top: 15px;
+}
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.content {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+
+    .contact {
+        .contact-info {
+            .store-name {
+                font-size: 22px;
+                font-weight: bold;
+                color: #333;
+                margin: 1.8rem 0 1.8rem 0;
+                text-transform: uppercase;
+            }
+            .contact-des {
+                display: flex;
+                align-items: center;
+                position: relative;
+                margin-bottom: 10px;
+                font-size: $main-front-size;
+                font-weight: 500;
+                color: #282828;
+                line-height: inherit;
+
+                p {
+                    margin-bottom: 0px;
+                }
+
+                .icon {
+                    margin-right: 10px;
+                    width: 15px;
+                    color: #ce0021;
+                }
+            }
+            .box-bct {
+                margin-top: 20px;
+            }
+        }
+    }
+    .introduce-info {
+        width: 30%;
+        padding-left: 7.5rem;
+        .title {
+            margin: 1rem 0 1.8rem;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .item {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: $main-front-size;
+            font-weight: 500;
+            color: #626262;
+        }
+        .item:hover {
+            color: #ce0021;
+        }
+    }
+    .social {
+        .title-menu {
+            margin: 1rem 0 1.8rem;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .social-icon {
+            display: inline-flex;
+            justify-content: start;
+            .item {
+                margin-right: 2rem;
+            }
+        }
+    }
+}
+.coppyright-info {
+    border-top: 0.1rem solid #e5e5ee;
+    text-align: center;
+    font-size: 13px;
+    padding: 10px;
+    color: #a4a9ae;
+    font-weight: 5000;
+}

@@ -1,0 +1,242 @@
+@import 'variables';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    // font-size: 62.5%;
+    scroll-behavior: auto !important;
+}
+
+body {
+    font-family: $font-family;
+}
+
+ul,
+li,
+ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+p {
+    margin: 0;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+}
+
+input[type='password']::-ms-reveal,
+input[type='password']::-webkit-search-clear-button,
+input[type='password']::-webkit-search-decoration,
+input[type='password']::-webkit-search-input,
+input[type='password']::-webkit-search-submit-button,
+input[type='password']::-webkit-search-cancel-button {
+    display: none;
+}
+
+.btn.show {
+    border-color: transparent !important;
+}
+
+.fz-16 {
+    font-size: $main-front-size;
+}
+
+/**
+    React toastify
+**/
+.Toastify__toast-body {
+    font-size: $main-front-size;
+}
+
+/**
+    React-slick
+**/
+// .slick-track {
+//     margin-left: 0 !important;
+//     display: flex !important;
+// }
+
+// .slick-list {
+//     overflow: unset !important;
+// }
+
+// .slick-slide {
+//     height: inherit !important;
+
+//     & > div {
+//         height: 100%;
+//         & > div {
+//             height: 100%;
+//             & > div {
+//                 height: 100%;
+//             }
+//         }
+//     }
+// }
+
+// .slick-track-number-of-slide-less-slides-to-show {
+//     .slick-track {
+//         transform: translate3d(0, 0, 0) !important;
+//     }
+
+//     button.slick-arrow {
+//         display: none !important;
+//     }
+// }
+
+// Nalink
+.navbar-nav .nav-item .nav-link.active {
+    color: #fe9700;
+}
+
+// End navlink
+
+.slick-slider {
+    position: relative;
+
+    .slick-dots {
+        position: absolute;
+        bottom: 20px;
+        display: block;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        text-align: center;
+    }
+
+    .slick-prev,
+    .slick-next {
+        z-index: 9;
+    }
+
+    .slick-prev {
+        left: 15px;
+    }
+
+    .slick-next {
+        right: 15px;
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+        font-size: 14px;
+        color: $main-color;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+    }
+}
+
+/** 
+    Bootstrap
+**/
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5% !important;
+}
+
+form {
+    .form-label {
+        font-size: 1.6rem;
+    }
+    .form-control {
+        font-size: 1.6rem;
+    }
+    .form-select {
+        font-size: 1.6rem;
+    }
+}
+
+body {
+    .mb-3 {
+        margin-bottom: 1.6rem !important;
+    }
+    .mt-3 {
+        margin-top: 1.6rem !important;
+    }
+}
+
+.nav-link {
+    color: #000;
+    font-size: $main-front-size;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+    color: #0a58ca;
+}
+
+/**
+    React datepicker
+**/
+.react-datepicker-popper {
+    z-index: 200;
+}
+
+.react-datepicker__header {
+    font-size: $main-front-size;
+}
+
+.react-datepicker__current-month {
+    font-size: $main-front-size;
+}
+
+.react-datepicker__day-names {
+    display: flex;
+    justify-content: space-around;
+}
+
+.react-datepicker__day {
+    font-size: $main-front-size;
+    width: 3.2rem;
+    height: 3.2rem;
+}
+
+.react-datepicker__day--selected {
+    background-color: #007bff;
+    color: white;
+}
+
+.react-datepicker__input-container input {
+    font-size: $main-front-size;
+    padding: 1rem;
+    height: 4rem;
+}
+
+/**
+    sweetalert2
+**/
+.swal2-title {
+    font-size: 3rem;
+}
+#swal2-html-container {
+    font-size: $main-front-size;
+}
+.swal2-confirm.swal2-styled.swal2-default-outline {
+    font-size: $main-front-size;
+}
+
+.swal2-cancel.swal2-styled.swal2-default-outline {
+    font-size: $main-front-size;
+}

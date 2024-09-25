@@ -1,0 +1,52 @@
+[
+  {
+    "Id": "5c90980f-12d8-4d0b-a161-30a64c988b98",
+    "UserName": "dinhkhacdien@gmail.com",
+    "Email": "dinhkhacdien@gmail.com",
+    "EmailConfirmed": true,
+    "Password": "@Abc123456",
+    "Address": "Số 24, Đường Trần Duy Hưng, Quận Cầu Giấy, Hà Nội",
+    "PhoneNumber": "0909123456",
+    "IsActive": true
+  },
+  {
+    "Id": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+    "UserName": "hoangquocviet@gmail.com",
+    "Email": "hoangquocviet@gmail.com",
+    "EmailConfirmed": true,
+    "IsActive": true,
+    "Password": "@Abc123456",
+    "Address": "Số 15, Đường Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+    "PhoneNumber": "0909123457"
+  },
+  {
+    "Id": "94df3fe8-2374-4272-b238-7937cac1ffad",
+    "UserName": "trinhxuanphuong@gmail.com",
+    "Email": "trinhxuanphuong@gmail.com",
+    "EmailConfirmed": true,
+    "IsActive": true,
+    "Password": "@Abc123456",
+    "Address": "Số 48, Đường Võ Văn Kiệt, Quận Ninh Kiều, Cần Thơ",
+    "PhoneNumber": "0909123458"
+  },
+  {
+    "Id": "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+    "UserName": "anh038953@gmail.com",
+    "Email": "anh038953@gmail.com",
+    "IsActive": true,
+    "EmailConfirmed": true,
+    "Password": "@Abc123456",
+    "Address": "Số 56, Đường Phạm Văn Đồng, Quận Liên Chiểu, Đà Nẵng",
+    "PhoneNumber": "0909123460"
+  },
+  {
+    "Id": "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+    "UserName": "hoangmyphong@gmail.com",
+    "Email": "hoangmyphong@gmail.com",
+    "IsActive": true,
+    "EmailConfirmed": true,
+    "Password": "@Abc123456",
+    "Address": "Số 12, Đường Lý Thái Tổ, Quận Hồng Bàng, Hải Phòng",
+    "PhoneNumber": "0909123461"
+  }
+]

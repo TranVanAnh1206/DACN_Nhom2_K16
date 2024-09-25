@@ -1,0 +1,299 @@
+@import '~/styles/variables';
+
+@keyframes delayShow {
+    0% {
+        opacity: 0;
+    }
+    99% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.1rem solid #1a1a1a1f;
+    background-color: #fff;
+    padding: 10px 5px;
+
+    .search-wrapper {
+        position: relative;
+
+        .search-input {
+            overflow: hidden;
+            padding: 0;
+            border-radius: 5rem;
+            display: flex;
+            border: 0.5px solid #1a1a1a1f;
+            align-items: center;
+            transition: 0.25s ease;
+            font-size: $main-front-size;
+
+            input {
+                border: none;
+                border-radius: 50%;
+                outline: none;
+                font-size: $main-front-size;
+                flex: 1;
+                min-width: 30rem;
+                padding: 10px 14px;
+                border-right: 0.1rem solid #3333331a;
+            }
+
+            .search-button {
+                padding: 0 12px;
+                border: none;
+                background-color: transparent;
+                margin-bottom: 0.2rem;
+                margin-right: 1rem;
+            }
+
+            &:focus-within {
+                border-color: #ccc;
+            }
+        }
+
+        .search-result-wrapper {
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 0 0.1rem #d1d7dc, 0 0.2rem 0.4rem rgba(0, 0, 0, 0.08), 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+            top: 100%;
+            z-index: 999999;
+            padding-left: 0;
+            width: 100%;
+            border-radius: 0.8rem;
+
+            .search-result {
+                max-height: 24.5rem;
+                overflow: hidden;
+
+                .result-item {
+                    text-decoration: none;
+                    color: $main-color;
+                    display: flex;
+                    align-items: center;
+                    border-bottom: 0.1rem solid rgba(0, 0, 0, 0.4);
+                    padding: 0.4rem 0.8rem;
+                    position: relative;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:hover {
+                        .result-item-info {
+                            .result-item-name {
+                                display: block;
+                                animation: delayShow 1.5s forwards;
+                            }
+                        }
+                    }
+
+                    img {
+                        width: 3.6rem;
+                        height: 3.6rem;
+                        border-radius: 50%;
+                        margin: 0.2rem 0.8rem;
+                    }
+
+                    .result-item-info {
+                        flex: 1;
+                        overflow: hidden;
+
+                        .result-item-header {
+                            font-weight: 700;
+                            line-height: 1.2;
+                            letter-spacing: 0;
+                            font-size: 14px;
+                            margin-bottom: 0.3rem;
+                            overflow: hidden;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 1;
+                            -webkit-box-orient: vertical;
+                        }
+
+                        .result-item-name {
+                            display: none;
+                            position: absolute;
+                            z-index: 999;
+                            background-color: #fff;
+                            font-size: 14px;
+                            box-shadow: 0 0 0.5rem 0 $box-shadow;
+                            top: 0;
+                            white-space: nowrap;
+                            padding: 0 0.3rem;
+                            border-radius: 0.6rem;
+                            opacity: 0;
+                            transition: opacity 0.5s ease-in-out;
+                        }
+
+                        .result-item-expand {
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+
+                            .search-result-item-authors {
+                                font-weight: 500;
+                                line-height: 1.2;
+                                letter-spacing: 0;
+                                font-size: 14px;
+                                letter-spacing: 0.02rem;
+                                overflow: hidden;
+                                flex: 1;
+                                display: -webkit-box;
+                                -webkit-line-clamp: 1;
+                                -webkit-box-orient: vertical;
+                            }
+
+                            .search-result-item-price {
+                                font-weight: 400;
+                                line-height: 1.4;
+                                font-size: 14px;
+                                margin-left: 1.6rem;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .see-all-result {
+                font-size: 14px;
+                text-align: center;
+                display: block;
+                border: 0.1rem solid $border;
+                padding-bottom: 0.2rem;
+            }
+        }
+
+        .search-result-empty {
+            padding-top: 0.6rem;
+            padding-bottom: 0.8rem;
+            text-align: center;
+            font-size: 14px;
+            position: absolute;
+            background-color: #fff;
+            box-shadow: 0 0 0 0.1rem #d1d7dc, 0 0.2rem 0.4rem rgba(0, 0, 0, 0.08), 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+            top: 100%;
+            z-index: 999999;
+            padding-left: 0;
+            width: 100%;
+            border-radius: 0.8rem;
+        }
+    }
+
+    .user-actions {
+        display: flex;
+        align-items: center;
+
+        .user-action {
+            padding: 0.4rem;
+            margin: 0 1.2rem;
+            width: 2.4rem;
+            height: 2.4rem;
+            color: #707070;
+
+            &:hover {
+                color: $main-color;
+            }
+        }
+    }
+
+    .btn-login {
+        font-size: 14px;
+    }
+}
+
+.voucher-wrapper {
+    position: relative;
+
+    .icon {
+        padding: 0.4rem;
+        margin: 0 1.2rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        color: #707070;
+
+        &:hover {
+            color: $main-color;
+        }
+    }
+
+    .voucher-list {
+        position: absolute;
+        border: 0.1rem solid #d1d7dc;
+        box-shadow: 0 0 0 0.1rem #d1d7dc, 0 0.2rem 0.4rem rgba(0, 0, 0, 0.08), 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+        background-color: #fff;
+        width: 25rem;
+        right: 0rem;
+        padding: 1.2rem;
+        animation: fadeIn 0.4s ease-in-out;
+        max-height: 32rem;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 0.8rem;
+            height: 0.8rem;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 1rem;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+        .voucher-item {
+            font-size: 14px;
+            box-shadow: 0 0 0.2rem 0 $box-shadow;
+            padding: 1.2rem 1.6rem;
+            background-color: #f3421f;
+            color: #fff;
+            cursor: pointer;
+
+            & + .voucher-item {
+                margin-top: 1rem;
+            }
+        }
+    }
+
+    .voucher-empty {
+        padding: 1.6rem;
+        position: absolute;
+        border: 0.1rem solid #d1d7dc;
+        box-shadow: 0 0 0 0.1rem #d1d7dc, 0 0.2rem 0.4rem rgba(0, 0, 0, 0.08), 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+        background-color: #fff;
+        width: 30rem;
+        position: absolute;
+        right: 0rem;
+        animation: fadeIn 0.4s ease-in-out;
+
+        p {
+            font-size: 1.6rem;
+            text-align: center;
+            margin-bottom: 0;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

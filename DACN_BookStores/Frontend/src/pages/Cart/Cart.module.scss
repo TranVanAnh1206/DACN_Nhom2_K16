@@ -1,0 +1,178 @@
+@import '~/styles/variables';
+
+.overlay {
+    background-color: #fefefe;
+    display: flex;
+    justify-content: center;
+}
+.pay-wrapper {
+    margin-top: 1rem;
+    max-width: 50rem;
+    min-width: 40rem;
+    background-color: #f5f5f5;
+    box-shadow: 0 0 0.1rem 0 #7d7c7c;
+
+    .books-wrapper {
+        padding: 1.6rem;
+
+        .book-wrapper {
+            padding: 0 1.2rem 1.2rem;
+            background-color: #fff;
+            border-radius: 1rem;
+
+            & + .book-wrapper {
+                margin-top: 1rem;
+            }
+
+            .action {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                .check {
+                }
+
+                .delete {
+                    font-size: 1.6rem;
+                    border: none;
+                    color: rgba(0, 0, 0, 0.54);
+                    background-color: transparent;
+                    padding: 0.8rem 1.2rem;
+
+                    &:hover {
+                        color: #d32f2f;
+                    }
+                }
+            }
+
+            .book-info {
+                display: flex;
+
+                .book-image {
+                    width: 12rem;
+                    height: auto;
+                    margin-right: 2rem;
+                }
+
+                .book-name {
+                    font-size: 2.6rem;
+                    overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                }
+
+                .book-price {
+                    font-size: 1.8rem;
+                }
+
+                .book-quantity {
+                    display: flex;
+                    font-size: 1.6rem;
+                    margin-top: 1rem;
+                    margin-bottom: 1.6rem;
+
+                    .book-quantity-btn {
+                        width: 3.2rem;
+                        height: 3.2rem;
+                        border: 0.1rem solid rgba(0, 0, 0, 0.09);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        cursor: pointer;
+                        background-color: #dfdddd;
+
+                        &:disabled {
+                            background-color: #f9f9f9;
+                        }
+                    }
+
+                    .book-quantity-input {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 5rem;
+                        height: 3.2rem;
+                        outline: none;
+                        border: none;
+                        text-align: center;
+                        border-top: 0.1rem solid rgba(0, 0, 0, 0.09);
+                        border-bottom: 0.1rem solid rgba(0, 0, 0, 0.09);
+                    }
+                }
+            }
+        }
+    }
+
+    .payment-footer {
+        position: sticky;
+        bottom: 0;
+        background-color: #fff;
+        box-shadow: 0 -0.1rem 0.3rem 0 $box-shadow;
+
+        .voucher-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-right: 1.6rem;
+            font-size: 1.8rem;
+            padding-top: 0.8rem;
+            margin-left: 1.6rem;
+
+            .voucher-value {
+                color: #0055aa;
+                cursor: pointer;
+            }
+        }
+
+        .total-payment {
+            font-size: 1.8rem;
+            color: #ee4d2d;
+            margin-left: 1.6rem;
+        }
+
+        .btn-pay {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            background-color: #ec6044;
+            color: #fff;
+            font-size: 1.8rem;
+            border: none;
+
+            &:hover {
+                background-color: #f3421f;
+            }
+        }
+    }
+}
+
+.fz-24 {
+    font-size: 2.4rem !important;
+}
+
+.voucher-item {
+    font-size: 1.8rem;
+    box-shadow: 0 0 0.2rem 0 $box-shadow;
+    padding: 1.2rem 1.6rem;
+    background-color: #f3421f;
+    color: #fff;
+    cursor: pointer;
+
+    & + .voucher-item {
+        margin-top: 1.6rem;
+    }
+}
+
+.paying {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
