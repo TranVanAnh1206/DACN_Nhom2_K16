@@ -1,0 +1,157 @@
+@import '~/styles/variables';
+
+.border-product {
+    width: 95%;
+    margin: auto;
+    border-bottom-width: 1px;
+    border-bottom-color: #ededed;
+    border-bottom-style: solid;
+}
+
+.item-product-cart {
+    display: flex;
+    padding: 10px 0;
+
+    .checked-product-cart {
+        display: flex;
+        flex-basis: 8%;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .img-product-cart {
+        padding: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-basis: 16%;
+    }
+
+    .group-product-info {
+        flex-basis: 68%;
+        display: flex;
+
+        .info-product-cart {
+            flex-basis: 60%;
+            /* padding-top: 15px; */
+            padding: 0 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            .cart-price {
+                font-weight: bold;
+            }
+
+            div {
+                .product-name-full-text {
+                    margin: 0;
+                    font-weight: normal;
+                    line-height: 18px;
+                    display: inline-block;
+
+                    a {
+                        font-size: $main-front-size;
+                        color: #333333;
+                        word-break: break-word;
+                        white-space: normal;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        max-height: 6em;
+                        padding-top: 0px;
+                    }
+                }
+            }
+        }
+
+        .number-product-cart {
+            flex-basis: 40%;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+            display: flex;
+
+            .product-view-quantity-box {
+                padding: 0px 10px 0px 10px;
+                flex: 2;
+
+                input {
+                    outline: none;
+                }
+
+                .product-view-quantity-box-block {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    border: 1px solid #e0e0e0e0;
+                    border-radius: 5px;
+                    height: 30px;
+
+                    a {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        user-select: none;
+                        transition: all 0.3s;
+                    }
+
+                    .btn-add-qty,
+                    .btn-subtract-qty {
+                        width: 100%;
+                        display: block !important;
+                        height: 100%;
+                        background: #fff;
+                        text-align: center;
+                        flex: 1;
+                        border: none;
+                        cursor: pointer;
+                    }
+
+                    .qty-carts {
+                        border: none;
+                        flex: 1;
+                        width: 20px;
+                        font-weight: 650;
+                        font-size: 15px;
+                        text-align: center;
+                    }
+                }
+            }
+
+            .cart-price-total {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                flex: 3;
+
+                .price {
+                    color: $main-price-color;
+                    font-weight: bold;
+                    font-size: $main-front-size;
+                }
+            }
+        }
+    }
+
+    .div-of-btn-remove-cart {
+        flex-basis: 8%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        a {
+            color: #333333;
+            cursor: pointer;
+
+            &:hover {
+                color: #c92127;
+            }
+        }
+    }
+}

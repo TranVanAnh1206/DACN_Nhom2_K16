@@ -1,10 +1,146 @@
 @import '~/styles/variables';
 
+.cart-component-wrap {
+    background-color: #f0f0f0;
+    padding-bottom: 30px;
+
+    .price {
+        color: $main-price-color;
+    }
+
+    .event-promotion-wrap {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 10px 10px;
+
+        .event-promotion-title {
+            border-bottom: 0.9px solid #ccc;
+            padding: 10px 3px 13px 3px;
+        }
+
+        .choose-ticket {
+            color: #0055aa;
+            cursor: pointer;
+        }
+
+        .promotion-ticket-used {
+            padding: 10px 10px;
+
+            .choosed-voucher-name {
+                font-weight: 700;
+            }
+
+            .no-ticket-used {
+                margin-top: 20px;
+                text-align: center;
+            }
+        }
+    }
+
+    .block-total-cart {
+        background: white;
+        border-radius: 8px;
+        margin-top: 20px;
+
+        .total-cart-page {
+            display: flex;
+            font-size: $main-front-size;
+            padding: 10px 16px;
+
+            .title-cart-page-left {
+                flex-basis: 65%;
+            }
+
+            .number-cart-page-right {
+                flex-basis: 35%;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }
+        }
+
+        .title-final-total {
+            font-weight: 650;
+            font-size: 15px;
+        }
+
+        .border-product {
+            width: 95%;
+            margin: auto;
+            border-bottom-width: 1px;
+            border-bottom-color: #ededed;
+            border-bottom-style: solid;
+        }
+
+        .method-button-cart {
+            padding-left: 16px;
+            padding-right: 16px;
+
+            button {
+                width: 100%;
+                margin: 5px 0px 10px 0px;
+                font-size: 18px;
+                color: white;
+                background: #c92127;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 8px;
+                transition: all 0.3s;
+
+                &:hover {
+                    background: #ffacaf;
+                    color: #333;
+                }
+            }
+        }
+    }
+}
+
+.product-cart-left {
+    border-radius: 8px;
+    background-color: #fff;
+}
+
 .overlay {
     background-color: #fefefe;
     display: flex;
     justify-content: center;
 }
+
+.header-cart-item {
+    background-color: white;
+    margin-bottom: 10px;
+    display: none;
+    border-radius: 8px;
+    padding: 10px 0;
+
+    .checkbox-all-product {
+        flex-basis: 9%;
+    }
+
+    div {
+        font-weight: 600;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-basis: 8%;
+    }
+
+    div:nth-child(2) {
+        justify-content: flex-start;
+        flex-basis: 68%;
+    }
+
+    div:nth-child(3) {
+        flex-basis: 13%;
+    }
+
+    div:nth-child(4) {
+        flex-basis: 21%;
+    }
+}
+
 .pay-wrapper {
     margin-top: 1rem;
     max-width: 50rem;

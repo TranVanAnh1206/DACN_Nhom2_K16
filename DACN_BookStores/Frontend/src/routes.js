@@ -9,20 +9,25 @@ import SearchResult from '~/pages/SearchResult';
 import AdminLayout from './layouts/AdminLayout';
 
 import AdminPage from '~/pages/AdminPage';
-import Pay from '~/pages/Pay';
 import Cart from '~/pages/Cart';
 import Order from '~/pages/Order';
 import NotFound from '~/pages/NotFound';
+import Register from './pages/Register';
+import NoNavbarLayout from './layouts/NoNavbarLayout';
+import AccountInfor from './pages/AccountInfor/AccountInfor';
+import Checkout from './pages/Checkout';
 
 const routes = [
     { path: '/', element: Home },
     { path: '/login', element: Login, layout: null },
+    { path: '/register', element: Register, layout: null },
     { path: '/book/:id', element: BookDetails },
     { path: '/search', element: SearchResult },
-    { path: '/book/:id/pay', element: Pay, layout: OnlyHeaderLayout },
-    { path: '/cart', element: Cart, layout: OnlyHeaderLayout },
-    { path: '/order', element: Order },
+    { path: '/cart', element: Cart, layout: NoNavbarLayout },
+    { path: '/order', element: Order, layout: NoNavbarLayout },
     { path: '/404', element: NotFound, layout: null },
+    { path: '/account-infor', element: AccountInfor, layout: NoNavbarLayout },
+    { path: '/checkout', element: Checkout, layout: NoNavbarLayout },
 ];
 
 export const adminRoutes = [{ path: '/admin', element: AdminPage, layout: AdminLayout }];

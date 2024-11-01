@@ -9,11 +9,16 @@ import { getBookPagingService } from '~/services/bookService';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slices/loadingSlide';
 import Group from '~/components/Group';
+import { HubConnectionBuilder } from '@microsoft/signalr';
+import { connect } from 'formik';
+import { getAllGenresService } from '~/services/genreService';
+import { Col, Row } from 'react-bootstrap';
 
 const Home = () => {
     const dispatch = useDispatch();
     const loading = useSelector((state) => state.loading);
     const [bestSeller, setBestSeller] = useState([]);
+    const [genres, setGenres] = useState([]);
 
     useEffect(() => {
         const fetchBestSeller = async () => {
@@ -29,7 +34,44 @@ const Home = () => {
             }
         };
 
+        const fetchAllGendesService = async () => {
+            dispatch(setLoading(true));
+
+            try {
+                const res = await getAllGenresService();
+
+                setGenres(res?.data);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                dispatch(setLoading(false));
+            }
+        };
+
+        fetchAllGendesService();
         fetchBestSeller();
+    }, []);
+
+    useEffect(() => {
+        var notificationsconnection = new HubConnectionBuilder()
+            .withUrl('https://localhost:7193/notificationHub')
+            .withAutomaticReconnect()
+            .build();
+
+        notificationsconnection
+            .start()
+            .then(() => {
+                console.log('connection to hubs');
+            })
+            .catch((err) => console.error('Connection error: ', err));
+
+        notificationsconnection.on('OnConnected', () => {
+            OnConnected();
+        });
+
+        const OnConnected = () => {
+            //
+        };
     }, []);
 
     var settings = {
@@ -38,57 +80,76 @@ const Home = () => {
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
+        autoplay: true,
+        speed: 400,
+        autoplaySpeed: 2000,
+        cssEase: 'linear',
     };
 
     return (
         <div className={clsx('container', styles['section'])}>
-            <div className="d-flex justify-content-between">
-                <div>
+            <Row>
+                <Col md={4}>
                     <div>
-                        <h1>Category</h1>
-                    </div>
-                </div>
+                        <div className={clsx(styles['category-wrap'])}>
+                            <h3 className={clsx(styles['category-title'])}>Thể loại</h3>
 
-                <div>
-                    <div className={clsx('container')}>
-                        <div className={clsx('slider-container')}>
-                            <div className={clsx(styles['slider'])}>
-                                <Slider {...settings}>
-                                    <div>
-                                        <div className={clsx(styles['slider-item-wrap'])}>
-                                            <div>
-                                                <img src={slider3} alt="slider 3" />
-                                            </div>
-
-                                            <div className={clsx(styles['slider-item--desc'])}>
-                                                <h1>A game of throne</h1>
-                                                <h1>-20%</h1>
-                                            </div>
-                                        </div>
+                            {genres?.map((item, index) => {
+                                return (
+                                    <div className={clsx(styles['category-item'])} key={`genre-${item.id}`}>
+                                        <p>{item.name}</p>
+                                        <p></p>
                                     </div>
-                                    <div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </Col>
+
+                <Col md={8}>
+                    <div>
+                        <div className={clsx('container')}>
+                            <div className={clsx('slider-container')}>
+                                <div className={clsx(styles['slider'])}>
+                                    <Slider {...settings}>
                                         <div>
                                             <div className={clsx(styles['slider-item-wrap'])}>
                                                 <div>
-                                                    <img src={slider4} alt="slider 4" />
+                                                    <img src={slider3} alt="slider 3" />
                                                 </div>
 
                                                 <div className={clsx(styles['slider-item--desc'])}>
-                                                    <h1>Wake the fuck up</h1>
+                                                    <h1>A game of throne</h1>
                                                     <h1>-20%</h1>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </Slider>
+                                        <div>
+                                            <div>
+                                                <div className={clsx(styles['slider-item-wrap'])}>
+                                                    <div>
+                                                        <img src={slider4} alt="slider 4" />
+                                                    </div>
+
+                                                    <div className={clsx(styles['slider-item--desc'])}>
+                                                        <h1>Wake the fuck up</h1>
+                                                        <h1>-20%</h1>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Slider>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </Col>
+            </Row>
+
+            <div className="d-flex justify-content-between"></div>
 
             <div>
-                <Group title={'best seller'} data={bestSeller} />
+                <Group title={'Sách mới'} data={bestSeller} />
             </div>
 
             <div className="section">
@@ -98,7 +159,7 @@ const Home = () => {
             </div>
 
             <div>
-                <Group title={'best seller'} data={bestSeller} />
+                <Group title={'Bán chạy nhất'} data={bestSeller} />
             </div>
         </div>
     );

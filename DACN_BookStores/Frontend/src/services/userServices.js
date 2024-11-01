@@ -28,3 +28,7 @@ export const getAllUsersService = ({ pageNumber = 1, pageSize = 10, filter = '' 
 export const userCreateByAdminService = (data) => {
     return axios.post('/User', data);
 };
+
+export const ChangeUserInforService = (data) => {
+    return axios.post('/User/change-user-infor', data);
+};

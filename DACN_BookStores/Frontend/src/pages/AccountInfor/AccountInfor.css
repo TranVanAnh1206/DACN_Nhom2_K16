@@ -1,0 +1,6 @@
+.user-info-wrap_css .nav-pills .nav-link.active,
+.user-info-wrap_css .nav-pills .show > .nav-link {
+    background-color: transparent;
+    color: red;
+    font-weight: bold;
+}

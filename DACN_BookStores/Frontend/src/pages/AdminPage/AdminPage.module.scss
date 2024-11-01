@@ -1,0 +1,122 @@
+@import '~/styles/variables';
+
+.header-wrapper {
+    padding: 2rem;
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+        font-size: 1.5rem;
+    }
+
+    table,
+    th,
+    td {
+        border: 0.1rem solid #ddd;
+    }
+
+    th,
+    td {
+        padding: 1.2rem;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    td img {
+        max-width: 10rem;
+        height: auto;
+        border-radius: 0.4rem;
+    }
+
+    .search-user-input {
+        width: 30%;
+    }
+
+    .page-number {
+        span,
+        a {
+            font-size: 1.6rem;
+        }
+    }
+}
+
+.sign-up-wrapper {
+    border-top: 0.1rem solid $border;
+    margin-top: 2rem;
+    padding-top: 2rem;
+
+    .sign-up-btn {
+        font-size: 1.6rem;
+        background-color: #44b52e;
+        border-color: #44b52e;
+
+        &:hover,
+        &:active {
+            background-color: #3c9b29;
+        }
+    }
+}
+
+.modal-sign-up-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.invalid-feedback {
+    font-size: 1.6rem;
+    color: #dc3545;
+    margin-top: 0.25rem;
+    white-space: nowrap;
+}
+
+.show-hide-password {
+    position: absolute;
+    right: 3rem;
+    top: 1.6rem;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+}
+
+.invalid {
+    border-color: var(--bs-form-invalid-border-color) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e") !important;
+}
+
+.book-image {
+    max-width: 5rem;
+    max-height: 5rem;
+
+    & + .book-image {
+        margin-top: 0.8rem;
+    }
+}
+
+.sort-type-active {
+    color: blue;
+}
+
+.overlay-loading {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}

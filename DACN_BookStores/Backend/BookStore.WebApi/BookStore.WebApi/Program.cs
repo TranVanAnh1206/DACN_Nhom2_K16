@@ -20,11 +20,10 @@ using BookStore.Datas.Interfaces;
 using BookStore.Datas.Repositories;
 using AutoMapper;
 using System.Reflection;
-using CloudinaryDotNet;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using BookStore.WebApi.Models;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using BookStore.Bussiness.ViewModel.Payment.Momo;
+using BookStore.WebApi.Hubs;
+using BookStore.WebApi.SubscribeTableDependencies;
 
 namespace BookStore.WebApi
 {
@@ -56,6 +55,7 @@ namespace BookStore.WebApi
 
                 builder.Services.AddSerilog();
                 builder.Services.AddLogging();
+                builder.Services.AddSignalR();
 
                 builder.Services.AddControllers().AddNewtonsoftJson();
                 builder.Services.AddEndpointsApiExplorer();
@@ -136,10 +136,6 @@ namespace BookStore.WebApi
 
                 #endregion
 
-                #region AWS
-                builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
-                #endregion
-
                 #region CORS
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
                 build =>
@@ -154,10 +150,8 @@ namespace BookStore.WebApi
                 var connectionString = builder.Configuration.GetConnectionString("DefaultCOnnection");
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
-                    // Server=database-1.ct84kk2asl0t.us-east-1.rds.amazonaws.com,1433;Database=BookStore_Group2;User ID=admin;Password=Anh12062003;MultipleActiveResultSets=true;Encrypt=False
-                    //Server=localhost,1433;Database=BookStore_Group2;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False
                     options.UseSqlServer(connectionString).EnableSensitiveDataLogging();
-                });
+                }, ServiceLifetime.Scoped);
 
                 builder.Services.AddHttpClient<Bussiness.Services.PaymentRequestService>();
 
@@ -270,6 +264,9 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IReportService, ReportService>();
                 builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
                 builder.Services.AddScoped<IVoucherService, VoucherService>();
+
+                builder.Services.AddScoped<NotificationHub>();
+                builder.Services.AddScoped<SubscribeNotificationTableDependency>();
                 #endregion
 
                 var app = builder.Build();
@@ -303,6 +300,9 @@ namespace BookStore.WebApi
                 app.MapControllers();
 
                 app.UseMiddleware<ErrorHandlingMiddleware>();
+                app.MapHub<NotificationHub>("/notificationHub");
+
+                app.UseSqlTableDependency<SubscribeNotificationTableDependency>(connectionString);
 
                 #region Chạy Seeding data
                 using var scope = app.Services.CreateScope();

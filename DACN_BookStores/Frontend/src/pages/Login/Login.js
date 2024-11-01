@@ -12,6 +12,7 @@ import { styled, Box, Card, Grid, Checkbox, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '~/redux/actions/authAction';
 import { setLoading } from '~/redux/slices/loadingSlide';
+import { saveUserInfo } from '~/redux/actions';
 
 // STYLED COMPONENTS
 const FlexBox = styled(Box)(() => ({
@@ -110,7 +111,11 @@ function Login() {
             var res = await dispatch(userLogin({ username: username, password }));
 
             if (res) {
-                localStorage.setItem('token', res.data.token);
+                const token = res.data.token;
+                localStorage.setItem('token', token);
+
+                await dispatch(saveUserInfo());
+
                 dispatch(setLoading(false));
                 navigate('/');
             }
@@ -169,12 +174,6 @@ function Login() {
                     message: error?.data?.message?.message,
                 });
             }
-        }
-    };
-
-    const handleEnterToSignup = (e) => {
-        if (e.key === 'Enter') {
-            handleSubmitFormSignUp(e);
         }
     };
 
@@ -247,7 +246,7 @@ function Login() {
 
                                     <div className="mt-3">
                                         Don't have an account?
-                                        <NavLink className={clsx('ms-2')} to="/session/signup">
+                                        <NavLink className={clsx('ms-2')} to="/register">
                                             Register
                                         </NavLink>
                                     </div>

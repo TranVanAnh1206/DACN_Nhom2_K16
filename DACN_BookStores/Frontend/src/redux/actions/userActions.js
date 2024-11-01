@@ -21,7 +21,7 @@ const saveUserInfors = () => async (dispatch) => {
     try {
         var user = await getPersonalInfoService();
 
-        console.log(user);
+        // console.log(user);
 
         if (user && user.data) {
             dispatch(saveUser(user.data));

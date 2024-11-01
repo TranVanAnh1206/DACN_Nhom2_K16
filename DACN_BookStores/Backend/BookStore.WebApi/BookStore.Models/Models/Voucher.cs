@@ -4,8 +4,18 @@
     {
         public int Id { get; set; }
 
-        public int Percent { get; set; }
+        public string Code { get; set; }
 
-        public ICollection<VoucherUser> VoucherUsers { get; set; }
+        public decimal DiscountAmount { get; set; }
+
+        public string? Description { get; set; }
+
+        public DateTime ExpirationDate { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public int MaxUsage { get; set; }
+
+        public int CurrentUsage { get; set; }
     }
 }

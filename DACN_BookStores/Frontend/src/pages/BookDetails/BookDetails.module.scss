@@ -1,0 +1,239 @@
+@import '~/styles/variables';
+
+.book-img {
+    width: 100%;
+}
+
+.buy-book {
+    .book-name {
+        font-size: 25px;
+    }
+
+    .rated-number-of-reviews {
+        display: flex;
+        margin-top: 1rem;
+
+        .book-rated {
+            display: flex;
+            align-items: center;
+            font-size: $main-front-size;
+            margin-right: 2rem;
+
+            .number-of-rates {
+                margin-right: 0.6rem;
+            }
+
+            svg {
+                font-size: $main-front-size;
+                color: #f69c08;
+            }
+        }
+        .number-of-reviews {
+            font-size: $main-front-size;
+        }
+    }
+
+    .book-genres {
+        font-size: $main-front-size;
+        margin-top: 16px;
+    }
+
+    .book-authors {
+        font-size: $main-front-size;
+        margin-top: 14px;
+    }
+
+    .book-other-info {
+        font-size: $main-front-size;
+        margin-top: 14px;
+    }
+
+    .book-price {
+        font-size: 32px;
+        margin-top: 14px;
+        color: #c92127;
+        font-weight: bold;
+    }
+
+    .book-quantity {
+        display: flex;
+        font-size: $main-front-size;
+        margin-top: 1rem;
+        margin-bottom: 15px;
+
+        .book-quantity-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(0, 0, 0, 0.09);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: #dfdddd;
+
+            &:disabled {
+                background-color: #f9f9f9;
+            }
+        }
+
+        .book-quantity-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 36px;
+            outline: none;
+            border: none;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.09);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+        }
+    }
+
+    .btn {
+        padding: 7px 15px;
+        font-size: $main-front-size;
+        color: #fff;
+        border: none;
+
+        &.btn-cart {
+            background-color: transparent;
+            margin-right: 20px;
+            color: black;
+            border: 1px solid #ec8000;
+
+            &:hover {
+                background-color: #ec8000;
+                color: #fff;
+            }
+        }
+
+        &.btn-buy-now {
+            background-color: #454545;
+
+            &:hover {
+                background-color: #272020;
+            }
+        }
+    }
+}
+
+.book-introduction {
+    // margin-top: 4rem;
+    padding: 2rem;
+
+    .book-introduction-title {
+        font-size: 19px;
+        font-weight: 700;
+        padding: 1rem;
+        background-color: #f3f3f3;
+    }
+
+    .intro-tab-content {
+        font-size: 18px;
+    }
+
+    .book-intro-name {
+        color: #ff8c00;
+        margin: 3rem 0;
+        font-size: 20px;
+    }
+}
+
+.comment-list {
+    margin-top: 30px;
+
+    .no-comment {
+        font-weight: bold;
+        color: #e96529;
+    }
+
+    .comment-list-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .comment {
+        display: flex;
+        margin-top: 0.4rem;
+        position: relative;
+
+        & + .comment {
+            margin-top: 1.2rem;
+        }
+
+        .comment-avatar-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .commentator-avatar {
+                width: 3.2rem;
+                height: 3.2rem;
+                border-radius: 50%;
+            }
+
+            .comment-date {
+                font-size: $main-front-size;
+            }
+        }
+
+        .comment-info-wrapper {
+            margin-left: 0.6rem;
+
+            .commentator-name-comment-content {
+                background-color: $background-color-medium-gray;
+                padding: 0.8rem 1.2rem;
+                border-radius: 1.2rem;
+
+                .commentator-name {
+                    font-size: $main-front-size;
+                    font-weight: 500;
+                }
+
+                .comment-content {
+                    font-size: $main-front-size;
+                }
+            }
+        }
+    }
+}
+
+.book-list {
+    padding-left: 0;
+    margin: 0 -1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+
+    .book {
+        margin-bottom: 1rem;
+        margin-left: -1rem;
+    }
+}
+
+.product_view_policy_desktop {
+    margin-top: 20px;
+
+    .product_view_policy_title {
+        font-weight: bold;
+    }
+
+    .product_view_item_note {
+        .product_view_item_note_title {
+            display: flex;
+            margin: 5px 0;
+
+            .product_view_item_icon {
+                width: 23px;
+                color: $main-price-color;
+            }
+
+            .product_view_item_title {
+                margin: 0px 9px;
+                font-weight: 500;
+            }
+        }
+    }
+}

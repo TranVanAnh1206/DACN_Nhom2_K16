@@ -386,8 +386,15 @@ namespace BookStore.Datas.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateOnly?>("Birthday")
+                        .HasColumnType("date");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -396,6 +403,9 @@ namespace BookStore.Datas.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -454,30 +464,31 @@ namespace BookStore.Datas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Percent")
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CurrentUsage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxUsage")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Vouchers");
-                });
-
-            modelBuilder.Entity("BookStore.Models.Models.VoucherUser", b =>
-                {
-                    b.Property<int>("VoucherId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("Used")
-                        .HasColumnType("bit");
-
-                    b.HasKey("VoucherId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("VoucherUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -745,25 +756,6 @@ namespace BookStore.Datas.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BookStore.Models.Models.VoucherUser", b =>
-                {
-                    b.HasOne("BookStore.Models.Models.User", "User")
-                        .WithMany("VoucherUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookStore.Models.Models.Voucher", "Voucher")
-                        .WithMany("VoucherUsers")
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-
-                    b.Navigation("Voucher");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -845,16 +837,6 @@ namespace BookStore.Datas.Migrations
             modelBuilder.Entity("BookStore.Models.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("BookStore.Models.Models.User", b =>
-                {
-                    b.Navigation("VoucherUsers");
-                });
-
-            modelBuilder.Entity("BookStore.Models.Models.Voucher", b =>
-                {
-                    b.Navigation("VoucherUsers");
                 });
 #pragma warning restore 612, 618
         }

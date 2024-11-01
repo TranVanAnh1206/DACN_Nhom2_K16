@@ -2,6 +2,7 @@
 using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel.Auth;
+using BookStore.Datas.DbContexts;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
 using BookStore.WebApi.Models;
@@ -19,13 +20,15 @@ namespace BookStore.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly BookStoreDbContext _dbContext;
         private readonly IUserRepository _userRepository;
         private readonly ICartService _cartService;
         private readonly IMapper _mapper;
 
-        public UserController(UserManager<User> userManager, IUserRepository userRepository, ICartService cartService, IMapper mapper)
+        public UserController(UserManager<User> userManager, BookStoreDbContext dbContext, IUserRepository userRepository, ICartService cartService, IMapper mapper)
         {
             _userManager = userManager;
+            _dbContext = dbContext;
             _userRepository = userRepository;
             _cartService = cartService;
             _mapper = mapper;
@@ -202,6 +205,27 @@ namespace BookStore.WebApi.Controllers
             {
                 return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
             }
+        }
+
+        [HttpPost]
+        [Route("change-user-infor")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ChangeUserInfor(UserUpdateViewModel input)
+        {
+            var user = await _userManager.FindByIdAsync(input.Id);
+            user.DisplayName = input.DisplayName;
+            user.IsActive = input.IsActive;
+            user.Email = input.Email;
+            user.Address = input.Address;
+            user.PhoneNumber = input.PhoneNumber;
+            user.Gender = input.Gender;
+            user.Birthday = input.Birthday;
+
+            await _dbContext.SaveChangesAsync();
+            
+            return Ok(_mapper.Map<UserViewModel>(user));
         }
     }
 }

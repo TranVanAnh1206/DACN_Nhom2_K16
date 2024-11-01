@@ -5,9 +5,7 @@ import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import useFetchUserData from '~/hooks/useFetchUserData';
 import { useDispatch, useSelector } from 'react-redux';
-import { userInfoSelector } from './redux/selectors';
 import NotFound from '~/pages/NotFound';
 import { SetupInterceptors } from './utils/axios';
 import { saveUserInfors } from './redux/actions';
@@ -48,8 +46,6 @@ function App() {
             if (token) {
                 await dispatch(saveUserInfors());
             }
-
-            console.log(userInfo);
         };
 
         fetUser();
@@ -58,6 +54,7 @@ function App() {
     return (
         <BrowserRouter>
             {<NavigateFunctionComponent />}
+
             <ScrollToTop />
 
             <Routes>

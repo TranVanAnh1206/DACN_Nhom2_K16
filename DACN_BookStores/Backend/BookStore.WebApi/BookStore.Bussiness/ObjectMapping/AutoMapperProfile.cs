@@ -101,8 +101,6 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<Voucher, VoucherViewModel>();
             CreateMap<VoucherCreateViewModel, Voucher>();
             CreateMap<VoucherUpdateViewModel, Voucher>();
-            CreateMap<VoucherUser, VoucherUserViewModel>()
-                .ForMember(x => x.Percent, x => x.MapFrom(e => e.Voucher.Percent));
 
             CreateMap(typeof(PaginationList<>), typeof(PaginationList<>))
                 .ConvertUsing(typeof(PaginatedListConverter<,>));

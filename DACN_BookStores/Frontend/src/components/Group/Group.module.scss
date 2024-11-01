@@ -1,0 +1,17 @@
+.title-wrap {
+    background-color: rgb(255, 205, 131);
+    padding: 5px 20px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .title {
+        margin-top: 0.5rem;
+        font-size: 20px;
+    }
+}
+
+.body-wrap {
+    margin: 20px 0;
+}

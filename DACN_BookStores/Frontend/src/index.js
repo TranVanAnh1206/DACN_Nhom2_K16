@@ -15,11 +15,14 @@ import 'sweetalert2/src/sweetalert2.scss';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 
 import '~/styles/index.scss';
+import { CartProvider } from './hooks/CartContext';
 
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App />
+            <CartProvider>
+                <App />
+            </CartProvider>
         </Provider>
     </React.StrictMode>,
     document.getElementById('root'),

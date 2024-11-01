@@ -1,0 +1,29 @@
+@import '~/styles/variables';
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    padding: 1rem 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.1rem solid #1a1a1a1f;
+    background-color: #fff;
+
+    .fz-32 {
+        font-size: 3.2rem;
+    }
+
+    .user-action {
+        padding: 0.4rem;
+        margin: 0 1.2rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        color: #707070;
+
+        &:hover {
+            color: $main-color;
+        }
+    }
+}

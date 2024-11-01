@@ -14,7 +14,7 @@ const Breadcrumb = ({ title, category, item }) => {
                             <li className="breadcrumb-item">
                                 <Link to="/">Home</Link>
                             </li>
-                            <li className="breadcrumb-item">{category}</li>
+                            {category ? <li className="breadcrumb-item">{category}</li> : <></>}
                             <li className="breadcrumb-item active" aria-current="page">
                                 {item}
                             </li>

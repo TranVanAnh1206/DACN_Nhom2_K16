@@ -1,0 +1,80 @@
+@import '~/styles/variables';
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.wrapper {
+    position: relative;
+    bottom: 0.2rem;
+    z-index: 9999;
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        margin: 10px;
+        cursor: pointer;
+    }
+
+    &::before {
+        position: absolute;
+        top: 4rem;
+        right: 0;
+        display: block;
+        content: '';
+        width: 10rem;
+        height: 2.5rem;
+    }
+
+    .menu {
+        position: absolute;
+        top: 6rem;
+        right: 0;
+        border: 0.1rem solid #d1d7dc;
+        background-color: #fff;
+        box-shadow: 0 0 0 0.1rem #d1d7dc, 0 0.2rem 0.4rem rgba(0, 0, 0, 0.08), 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+        animation: fadeIn 0.2s ease-in;
+
+        .menu-user-info {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+
+            .menu-user-name {
+                font-size: $main-front-size;
+                font-weight: bold;
+            }
+        }
+
+        .menu-section {
+            padding-left: 0;
+            margin-bottom: 0;
+
+            .section {
+                border-top: 0.1rem solid #d1d7dc;
+
+                .group-menu-item {
+                    padding: 0.5rem 1.6rem;
+                    margin-bottom: 0;
+
+                    .menu-item {
+                        cursor: pointer;
+                        padding: 0.5rem 0;
+                        white-space: nowrap;
+                        font-size: $main-front-size;
+
+                        a {
+                            text-decoration: none;
+                            color: $main-color;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
