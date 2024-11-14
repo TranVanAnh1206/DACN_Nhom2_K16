@@ -31,37 +31,51 @@ const Header = () => {
     const searchResultRef = useRef(null);
     const [searchResult, setSearchResult] = useState([]);
     const [showSearchResult, setShowSearchResult] = useState(false);
+
     const handleShowSearchResult = () => setShowSearchResult(true);
     const handleCloseSearchResult = () => setShowSearchResult(false);
 
     useEffect(() => {
-        fetchUserCart();
+        const initialKeyword = queryParams.get('keyword') || '';
+        setKeyword(initialKeyword);
+        handleCloseSearchResult();
+    }, [location.search]);
 
-        console.log(cart);
+    useEffect(() => {
+        fetchUserCart();
+        setShowSearchResult(false);
     }, []);
 
     useEffect(() => {
-        setKeyword('');
-        handleCloseSearchResult();
-    }, [location]);
-
-    useEffect(() => {
-        const fetchSearchBookByNameOrAuthor = async () => {
-            try {
-                if (searchKey !== '') {
-                    const res = await searchBookByNameOrAuthor(searchKey);
-                    setSearchResult(res?.data?.datas);
-                    handleShowSearchResult();
-                } else {
-                    setSearchResult([]);
-                }
-            } catch (error) {
-                setSearchResult([]);
-                console.log(error);
+        const handleClickOutside = (e) => {
+            if (searchResultRef.current && !searchResultRef.current.contains(e.target)) {
+                handleCloseSearchResult();
             }
         };
-        fetchSearchBookByNameOrAuthor();
-    }, [searchKey]);
+
+        // Gắn sự kiện khi component mount
+        document.addEventListener('mousedown', handleClickOutside);
+
+        // Xóa sự kiện khi component unmount
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [searchResultRef]);
+
+    const fetchSearchBookByNameOrAuthor = async () => {
+        try {
+            if (keyword !== '') {
+                const res = await searchBookByNameOrAuthor({ keyword: keyword, pageNumber: 1, pageSize: 12 });
+                setSearchResult(res?.data?.datas);
+                handleShowSearchResult();
+            } else {
+                setSearchResult([]);
+            }
+        } catch (error) {
+            setSearchResult([]);
+            console.log(error);
+        }
+    };
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
@@ -77,19 +91,23 @@ const Header = () => {
                 </Link>
 
                 <div className={clsx(styles['search-wrapper'])}>
-                    <div className={clsx(styles['search-input'])}>
+                    <form autoComplete="off" className={clsx(styles['search-input'])}>
                         <input
+                            type="search"
                             value={keyword}
-                            onChange={(e) => setKeyword(e.target.value)}
-                            onFocus={handleShowSearchResult}
+                            onChange={(e) => {
+                                setKeyword(e.target.value);
+                            }}
+                            onInput={fetchSearchBookByNameOrAuthor}
                             onKeyDown={handleSearch}
                             placeholder="Tìm tên sách/tên tác giả"
                         />
-                        <button className={clsx(styles['search-button'])}>
+                        <button type="button" className={clsx(styles['search-button'])}>
                             <FontAwesomeIcon icon={faMagnifyingGlass} />
                         </button>
-                    </div>
+                    </form>
 
+                    {/* Hiển thị các kết quả tìm kiếm phù hợp */}
                     {showSearchResult && (
                         <div ref={searchResultRef}>
                             {searchResult?.length > 0 ? (
@@ -133,6 +151,7 @@ const Header = () => {
                                             );
                                         })}
                                     </div>
+
                                     <Link to={`/search?keyword=${keyword}`} className={clsx(styles['see-all-result'])}>
                                         Xem tất cả
                                     </Link>

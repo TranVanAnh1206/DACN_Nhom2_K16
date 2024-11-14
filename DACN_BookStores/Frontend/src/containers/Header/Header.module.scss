@@ -40,13 +40,12 @@
 
                 input {
                     border: none;
-                    border-radius: 50%;
+                    border-radius: 5rem;
                     outline: none;
                     font-size: $main-front-size;
                     flex: 1;
                     min-width: 30rem;
                     padding: 10px 14px;
-                    border-right: 0.1rem solid #3333331a;
                 }
 
                 .search-button {
@@ -71,7 +70,7 @@
                 z-index: 999999;
                 padding-left: 0;
                 width: 100%;
-                border-radius: 0.8rem;
+                border-radius: 5px;
 
                 .search-result {
                     max-height: 24.5rem;
@@ -82,7 +81,6 @@
                         color: $main-color;
                         display: flex;
                         align-items: center;
-                        border-bottom: 0.1rem solid rgba(0, 0, 0, 0.4);
                         padding: 0.4rem 0.8rem;
                         position: relative;
 
@@ -97,12 +95,14 @@
                                     animation: delayShow 1.5s forwards;
                                 }
                             }
+
+                            background-color: #fff4df;
                         }
 
                         img {
                             width: 3.6rem;
                             height: 3.6rem;
-                            border-radius: 50%;
+                            border: 0.8px solid #ccc;
                             margin: 0.2rem 0.8rem;
                         }
 
@@ -161,6 +161,7 @@
                                     line-height: 1.4;
                                     font-size: 14px;
                                     margin-left: 1.6rem;
+                                    color: $main-price-color;
                                 }
                             }
                         }
@@ -171,7 +172,7 @@
                     font-size: 14px;
                     text-align: center;
                     display: block;
-                    border: 0.1rem solid $border;
+                    border-top: 0.5px solid #ccc;
                     padding-bottom: 0.2rem;
                 }
             }

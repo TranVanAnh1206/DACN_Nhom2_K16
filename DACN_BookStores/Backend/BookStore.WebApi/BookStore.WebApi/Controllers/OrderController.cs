@@ -6,6 +6,7 @@ using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Models.Enums;
 using BookStore.Models.Models;
 using BookStore.WebApi.Models;
+using MailKit.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -176,8 +177,9 @@ namespace BookStore.WebApi.Controllers
                 create.UserId = _userManager.GetUserId(User);
 
                 var res = await _orderService.CreateAsync(create);
+                int statusCode = int.Parse(res["StatusCode"].ToString());
 
-                if (res == 2)
+                if (statusCode == 2)
                 {
                     return BadRequest(new ExceptionResponse
                     {
@@ -186,7 +188,7 @@ namespace BookStore.WebApi.Controllers
                     });
                 }
 
-                if (res == 3)
+                if (statusCode == 3)
                 {
                     return BadRequest(new ExceptionResponse
                     {
@@ -195,14 +197,20 @@ namespace BookStore.WebApi.Controllers
                     });
                 }
 
-                if (res == 0)
+                if (statusCode == 0)
                     return BadRequest(new ExceptionResponse
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
                         Message = "Không ông thể đặt hàng."
                     });
 
-                return Ok(res);
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = res["Message"].ToString(),
+                    OrderId = int.Parse(res["OrderId"].ToString()),
+                    TotalAmount = int.Parse(res["TotalAmount"].ToString().Split(",")[0])
+                });
             }
             catch (Exception ex)
             {

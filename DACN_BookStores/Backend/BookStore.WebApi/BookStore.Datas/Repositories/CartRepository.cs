@@ -38,6 +38,18 @@ namespace BookStore.Datas.Repositories
         {
             var cart = await _dbContext.Carts.SingleOrDefaultAsync(x => x.UserId == userId);
 
+            cart = new Cart
+            {
+                CartItems = [],
+                UserId = userId
+            };
+
+            if (cart == null)
+            {
+                await _dbContext.Carts.AddAsync(cart);
+                await _dbContext.SaveChangesAsync();
+            }
+
             return cart.Id;
         }
 

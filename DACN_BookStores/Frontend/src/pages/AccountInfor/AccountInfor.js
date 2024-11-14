@@ -11,6 +11,30 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
+import * as Yup from 'yup';
+import { Field, Formik } from 'formik';
+import { TextField } from '@mui/material';
+import customToastify from '~/utils/customToastify';
+
+var initialChangePassValue = {
+    oldPass: '',
+    newPass: '',
+    confirmPass: '',
+};
+
+var validationChangePassSchema = Yup.object().shape({
+    oldPass: Yup.string().required('Vui lòng nhập mật khẩu hiển tại!'),
+    newPass: Yup.string()
+        .required('Vui lòng nhập mật khẩu mới!')
+        .min(6, 'Mật khẩu tối thiểu 6 ký tự')
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+            'Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường, 1 chữ số và 1 ký tự đặc biệt',
+        ),
+    confirmPass: Yup.string()
+        .required('Xác nhận mật khẩu mới!')
+        .oneOf([Yup.ref('newPass'), null], 'Mật khẩu xác nhận không khớp'),
+});
 
 var AccountInfor = () => {
     const dispatch = useDispatch();
@@ -28,6 +52,7 @@ var AccountInfor = () => {
     });
     const [isEditing, setIsEditing] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [changePassErrors, setChangePassErrors] = useState({});
 
     useEffect(() => {
         setUserInfo({ ...user });
@@ -59,6 +84,33 @@ var AccountInfor = () => {
     const handleChangeInfor = (e) => {
         e.preventDefault();
         setIsEditing(true);
+    };
+
+    const handleFrmChangePasswordSubmit = async (values) => {
+        dispatch(setLoading(true));
+
+        try {
+            // Xử lý dữ liệu sau khi người dùng nhập đúng form
+            console.log('Form values:', values);
+
+            var res = await ChangePasswordService(values.oldPass, values.newPass, values.confirmPass);
+
+            if (res.data?.statusCode === 200) {
+                customToastify.success(res.data?.message);
+
+                initialChangePassValue = {
+                    oldPass: '',
+                    newPass: '',
+                    confirmPass: '',
+                };
+            } else {
+                customToastify.error(res.data?.message);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            dispatch(setLoading(false));
+        }
     };
 
     return (
@@ -183,9 +235,9 @@ var AccountInfor = () => {
                                                             <div>{userInfo.gender === 'male' ? 'Nam' : 'Nữ'}</div>
                                                         ) : (
                                                             <>
-                                                                <div class="form-check me-3">
+                                                                <div className="form-check me-3">
                                                                     <input
-                                                                        class="form-check-input"
+                                                                        className="form-check-input"
                                                                         type="radio"
                                                                         name="gender"
                                                                         value={'male'}
@@ -193,13 +245,16 @@ var AccountInfor = () => {
                                                                         checked={userInfo.gender === 'male'}
                                                                         onChange={handleInputChange}
                                                                     />
-                                                                    <label class="form-check-label" for="gender_male">
+                                                                    <label
+                                                                        className="form-check-label"
+                                                                        htmlFor="gender_male"
+                                                                    >
                                                                         Nam
                                                                     </label>
                                                                 </div>
-                                                                <div class="form-check">
+                                                                <div className="form-check">
                                                                     <input
-                                                                        class="form-check-input"
+                                                                        className="form-check-input"
                                                                         type="radio"
                                                                         name="gender"
                                                                         value={'female'}
@@ -207,7 +262,10 @@ var AccountInfor = () => {
                                                                         checked={userInfo.gender === 'female'}
                                                                         onChange={handleInputChange}
                                                                     />
-                                                                    <label class="form-check-label" for="gender_female">
+                                                                    <label
+                                                                        className="form-check-label"
+                                                                        htmlFor="gender_female"
+                                                                    >
                                                                         Nữ
                                                                     </label>
                                                                 </div>
@@ -257,9 +315,75 @@ var AccountInfor = () => {
                                         </div>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="second">
-                                        <div>
-                                            <h2>Đổi mật khẩu</h2>
-                                        </div>
+                                        <Formik
+                                            initialValues={initialChangePassValue}
+                                            validationSchema={validationChangePassSchema}
+                                            onSubmit={handleFrmChangePasswordSubmit}
+                                        >
+                                            {({ values, errors, touched, handleChange, handleBlur, handleSubmit }) => (
+                                                <form onSubmit={handleSubmit} autoComplete="off">
+                                                    <h2>Đổi mật khẩu</h2>
+
+                                                    <div className={clsx(styles['change-pass-wrap'])}>
+                                                        <TextField
+                                                            fullWidth
+                                                            autoComplete="off"
+                                                            type="password"
+                                                            size="small"
+                                                            name="oldPass"
+                                                            label="Mật khẩu hiện tại"
+                                                            variant="outlined"
+                                                            onBlur={handleBlur}
+                                                            value={values.oldPass}
+                                                            onChange={handleChange}
+                                                            helperText={touched.oldPass && errors.oldPass}
+                                                            error={Boolean(errors.oldPass && touched.oldPass)}
+                                                            sx={{ mb: 3 }}
+                                                        />
+
+                                                        <TextField
+                                                            fullWidth
+                                                            autoComplete="off"
+                                                            type="password"
+                                                            size="small"
+                                                            name="newPass"
+                                                            label="Mật khẩu mới"
+                                                            variant="outlined"
+                                                            onBlur={handleBlur}
+                                                            value={values.newPass}
+                                                            onChange={handleChange}
+                                                            helperText={touched.newPass && errors.newPass}
+                                                            error={Boolean(errors.newPass && touched.newPass)}
+                                                            sx={{ mb: 3 }}
+                                                        />
+
+                                                        <TextField
+                                                            fullWidth
+                                                            autoComplete="off"
+                                                            type="password"
+                                                            size="small"
+                                                            name="confirmPass"
+                                                            label="Xác nhận mật khẩu"
+                                                            variant="outlined"
+                                                            onBlur={handleBlur}
+                                                            value={values.confirmPass}
+                                                            onChange={handleChange}
+                                                            helperText={touched.confirmPass && errors.confirmPass}
+                                                            error={Boolean(errors.confirmPass && touched.confirmPass)}
+                                                            sx={{ mb: 3 }}
+                                                        />
+                                                    </div>
+
+                                                    <button
+                                                        type="submit"
+                                                        className={clsx(styles.saveButton)}
+                                                        disabled={errors === null}
+                                                    >
+                                                        Đổi mật khẩu
+                                                    </button>
+                                                </form>
+                                            )}
+                                        </Formik>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </Col>

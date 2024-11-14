@@ -29,7 +29,7 @@ const Book = ({ bookId, img, name, nameAuthor, price, rated = 0 }) => {
                 <div>
                     <div className={clsx(styles['image-wrap'])}>
                         <Link to={`/book/${bookId}`}>
-                            <img src={img} alt={name} />
+                            <img src={img || bookImageDefault} alt={name} />
                         </Link>
 
                         <div className={clsx(styles['product-actions'])}>
@@ -50,7 +50,7 @@ const Book = ({ bookId, img, name, nameAuthor, price, rated = 0 }) => {
                     <div className={clsx(styles['book-info-wrap'])}>
                         <Link to={`/book/${bookId}`} className={clsx(styles['product-name'])}>
                             <div className={clsx(styles['name-wrap'])}>
-                                <span>{name}</span>
+                                <span title={name}>{name}</span>
                             </div>
                         </Link>
 

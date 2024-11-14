@@ -32,3 +32,7 @@ export const userCreateByAdminService = (data) => {
 export const ChangeUserInforService = (data) => {
     return axios.post('/User/change-user-infor', data);
 };
+
+export const ChangePasswordService = (oldPass, newPass, confirmPass) => {
+    return axios.post(`/User/change-password?oldPass=${oldPass}&newPass=${newPass}&confirmPass=${confirmPass}`);
+};

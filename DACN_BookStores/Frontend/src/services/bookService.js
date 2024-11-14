@@ -33,11 +33,34 @@ export const getBookByIdService = (id) => {
     return axios.get(`/Books/${id}`);
 };
 
-export const searchBookByNameOrAuthor = (keyword) => {
-    return axios.get('/Books/searching', {
-        params: {
-            filter: keyword,
-        },
+export const searchBookByNameOrAuthor = ({ bookGroups = [], authors = [], keyword, pageNumber = 1, pageSize = 10 }) => {
+    const params = {
+        filter: keyword,
+        pageNumber: pageNumber,
+        pageSize: pageSize,
+    };
+
+    const genreQuery = bookGroups.map((bgId) => `BookGroupIds=${bgId}`).join('&');
+    const authorQuery = authors.map((authorId) => `AuthorIds=${authorId}`).join('&');
+    const additionalQuery = [genreQuery, authorQuery].filter(Boolean).join('&');
+    const url = additionalQuery ? `/Books/searching?${additionalQuery}` : '/Books/searching';
+
+    // if (bookGroups.length > 0) {
+    //     const bg = bookGroups.reduce((acc, bgId, index) => {
+    //         if (index !== bookGroups.length - 1) {
+    //             return `${acc}BookGroupIds=${bgId}&`;
+    //         }
+
+    //         return `${acc}BookGroupIds=${bgId}`;
+    //     }, '');
+
+    //     return axios.get(`/Books/searching?${bg}`, {
+    //         params: params,
+    //     });
+    // }
+
+    return axios.get(url, {
+        params: params,
     });
 };
 

@@ -16,6 +16,7 @@ namespace BookStore.Bussiness.ViewModel.Order
         public OrderStatusEnum Status { get; set; }
         public int VoucherId { get; set; }
         public decimal VoucherDiscount { get; set; }
+        public string PaymentMethod { get; set; }
         public DateTime Date { get; set; }
         public IEnumerable<OrderItemViewModel> OrderItems { get; set; }
     }

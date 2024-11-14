@@ -145,9 +145,9 @@ namespace BookStore.Bussiness.Services
                     );
                 }
 
-                if (spec.AuthorId != null)
+                if (spec.AuthorIds != null)
                 {
-                    entities = entities.Where(x => x.BookAuthors.Any(s => s.AuthorId == spec.AuthorId));
+                    entities = entities.Where(x => x.BookAuthors.Any(s => spec.AuthorIds.Contains(s.AuthorId)));
                 }
 
                 //if (spec.PublisherId != null)

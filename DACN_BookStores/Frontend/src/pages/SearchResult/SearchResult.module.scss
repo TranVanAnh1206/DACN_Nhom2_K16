@@ -1,3 +1,12 @@
+.search-result-title-wrap {
+    margin: 10px;
+
+    span {
+        margin-left: 15px;
+        color: #2489f4;
+    }
+}
+
 .search-result-wrapper {
     // margin-top: 2rem;
 
@@ -6,5 +15,17 @@
         width: 200px;
         margin: 10px 10px;
         max-width: 23.5rem;
+    }
+}
+
+.left-slide-wraper {
+    h3 {
+        font-size: 16px;
+    }
+}
+
+.page-item {
+    button:disabled {
+        background-color: #ccc;
     }
 }

@@ -18,6 +18,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
+import { getMomoLinkPaymentService, getVnpayLinkPaymentService } from '~/services/PaymentService';
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -36,8 +37,6 @@ const Order = () => {
         try {
             setLoading(true);
             const res = await getOrderService();
-
-            console.log(res);
 
             if (res && res?.data) {
                 setOrders(res?.data);
@@ -117,11 +116,41 @@ const Order = () => {
         }
     };
 
+    const handlePayment = async (amount, orderId, orderInfor, paymentMethod) => {
+        console.log(amount, orderId, orderInfor, paymentMethod);
+
+        if (paymentMethod === 'MOMO') {
+            var resMoMo = await getMomoLinkPaymentService({
+                amount: amount,
+                orderId: `${orderId}_${new Date().getTime()}`,
+                orderInfo: orderInfor,
+            });
+
+            console.log(resMoMo);
+
+            if (resMoMo.status === 200) {
+                window.location.href = resMoMo.data?.payUrl;
+            }
+        } else if (paymentMethod === 'VNPAY') {
+            var resVNPay = await getVnpayLinkPaymentService({
+                amount: amount,
+                orderId: `${orderId}_${new Date().getTime()}`,
+                orderInfo: orderInfor,
+            });
+
+            console.log(resVNPay);
+
+            if (resVNPay.status === 200) {
+                window.location.href = resVNPay.data?.payUrl;
+            }
+        }
+    };
+
     return (
         <>
             <div className={clsx(styles['overlay'])}>
                 <div className={clsx('container', styles['order-wrapper'])}>
-                    <BreadCrumb title="Your order" item="Order" />
+                    <BreadCrumb title="Đơn hàng của tôi" item="Đơn hàng của tôi" />
 
                     {orders?.map((order) => {
                         const obj = {
@@ -132,12 +161,10 @@ const Order = () => {
                             4: 'Đang xử lý',
                         };
 
-                        console.log(order);
-
                         return (
                             <div key={`order-${order?.id}`} className={clsx(styles['order'])}>
-                                <div>
-                                    <div></div>
+                                <div className={clsx(styles['order-header'])}>
+                                    <div>Mã đơn hàng: {order?.id}</div>
 
                                     <div className={clsx(styles['order-status'])}>{obj[order?.status]}</div>
                                 </div>
@@ -180,9 +207,19 @@ const Order = () => {
                                 </div>
 
                                 <div className={clsx(styles['order-footer'])}>
-                                    <div className={clsx(styles['order-date'])}>
-                                        Ngày mua: {formatDateTime(order?.date)}
+                                    <div>
+                                        <div className={clsx(styles['order-date'])}>
+                                            Ngày mua: {formatDateTime(order?.date)}
+                                        </div>
+                                        <div className="mt-2">
+                                            {order?.paymentMethod === 'COD'
+                                                ? 'Thanh toán khi nhận hàng'
+                                                : order?.paymentMethod === 'MOMO'
+                                                ? 'Thanh toán bằng MOMO'
+                                                : 'Thanh toán bằng VNPay'}
+                                        </div>
                                     </div>
+
                                     <div className="d-flex flex-column align-items-end">
                                         {order?.voucherId !== 0 ? (
                                             <div className="fz-16">
@@ -252,12 +289,19 @@ const Order = () => {
                                                     Huỷ đơn
                                                 </button>
                                                 {order?.status === 2 && (
-                                                    <Link
-                                                        to={`/book/${order?.orderItems[0].bookId}/pay?quantity=${order?.orderItems[0].quantity}`}
+                                                    <button
+                                                        onClick={() =>
+                                                            handlePayment(
+                                                                order?.totalAmount,
+                                                                order?.id,
+                                                                `Thanh toán ${order?.totalAmount} cho đơn hàng ${order?.id}`,
+                                                                order?.paymentMethod,
+                                                            )
+                                                        }
                                                         className={clsx('d-block ms-3', styles['order-buy-back'])}
                                                     >
                                                         Thanh toán
-                                                    </Link>
+                                                    </button>
                                                 )}
                                             </div>
                                         )}

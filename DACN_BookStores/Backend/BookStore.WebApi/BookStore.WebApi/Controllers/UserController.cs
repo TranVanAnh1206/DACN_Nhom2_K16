@@ -61,7 +61,7 @@ namespace BookStore.WebApi.Controllers
 
                 if (users == null)
                 {
-                    return NotFound(new ErrorDetails (StatusCodes.Status404NotFound, "Không tìm thấy user nào"));
+                    return NotFound(new ErrorDetails(StatusCodes.Status404NotFound, "Không tìm thấy user nào"));
                 }
 
                 if (spec != null)
@@ -118,7 +118,7 @@ namespace BookStore.WebApi.Controllers
 
                 if (user == null)
                 {
-                    return NotFound(new ErrorDetails (StatusCodes.Status404NotFound, "Không tồn tại user"));
+                    return NotFound(new ErrorDetails(StatusCodes.Status404NotFound, "Không tồn tại user"));
                 }
 
                 if (user.IsActive == false)
@@ -140,8 +140,9 @@ namespace BookStore.WebApi.Controllers
 
                 return Ok(uservm);
             }
-            catch (Exception ex) {
-                return BadRequest(new ErrorDetails (StatusCodes.Status400BadRequest, ex.Message));
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
             }
         }
 
@@ -156,7 +157,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateUser (UserCreateViewModel uservm)
+        public async Task<IActionResult> CreateUser(UserCreateViewModel uservm)
         {
             try
             {
@@ -216,7 +217,7 @@ namespace BookStore.WebApi.Controllers
         {
             var user = await _userManager.FindByIdAsync(input.Id);
             user.DisplayName = input.DisplayName;
-            user.IsActive = input.IsActive;
+            user.IsActive = true;
             user.Email = input.Email;
             user.Address = input.Address;
             user.PhoneNumber = input.PhoneNumber;
@@ -224,8 +225,55 @@ namespace BookStore.WebApi.Controllers
             user.Birthday = input.Birthday;
 
             await _dbContext.SaveChangesAsync();
-            
+
             return Ok(_mapper.Map<UserViewModel>(user));
+        }
+
+        [HttpPost]
+        [Route("change-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ChangePassword(string oldPass, string newPass, string confirmPass)
+        {
+            var user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+
+            if (!(await _userManager.CheckPasswordAsync(user, oldPass)))
+            {
+                return BadRequest(new
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Mật khẩu hiện tại không đúng!"
+                });
+            }
+
+            if (newPass != confirmPass)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Xác nhận mật khẩu không đúng!"
+                });
+            }
+
+
+            var res = await _userManager.ChangePasswordAsync(user, oldPass, newPass);
+
+            if (res.Succeeded)
+            {
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Thay đổi mật khẩu thành công!"
+                });
+            }
+
+            return BadRequest(new
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Có lỗi xảy ra!"
+            });
+
         }
     }
 }

@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { formatPrice } from '~/utils/commonUtils';
 import styles from './Checkout.module.scss';
 import { Modal } from 'react-bootstrap';
@@ -13,10 +13,13 @@ import { faChevronRight, faClose, faTicket } from '@fortawesome/free-solid-svg-i
 import { orderService } from '~/services/orderService';
 import customToastify from '~/utils/customToastify';
 import { setLoading } from '~/redux/slices/loadingSlide';
+import { getMomoLinkPaymentService, getVnpayLinkPaymentService } from '~/services/PaymentService';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 const Checkout = () => {
     const dispatch = useDispatch();
     const location = useLocation();
+    const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     const { checkedBooks, totalPay } = location.state;
     let { voucherSelected } = location.state;
@@ -24,6 +27,9 @@ const Checkout = () => {
     const [voucher, setVoucher] = useState(voucherSelected);
     const [showVoucher, setShowVoucher] = useState(false);
     const [voucherSelectedId, setVoucherSelectedId] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState('COD');
+    const [isChecout, setIsCheckout] = useState(false);
+    const [notificationsConnection, setNotificationsConnection] = useState(null);
 
     // handle add voucher
     useEffect(() => {
@@ -77,22 +83,109 @@ const Checkout = () => {
         // setPaying(true);
 
         try {
-            await orderService({
+            let orderStatus = 4;
+            if (paymentMethod === 'COD') {
+                orderStatus = 4;
+            } else if (paymentMethod === 'MOMO') {
+                orderStatus = 2;
+            } else if (paymentMethod === 'VNPAY') {
+                orderStatus = 2;
+            }
+
+            const resOrder = await orderService({
                 userId: user?.id,
+                date: new Date().toISOString(),
+                paymentMethod: paymentMethod,
                 voucherId: voucher ? voucher?.voucherId : 0,
-                orderList: checkedBooks.map((b) => ({ bookId: b?.id, quantity: b?.quantity })),
+                status: orderStatus,
+                orderItems: checkedBooks.map((b) => ({ bookId: b?.id, quantity: b?.quantity })),
             });
 
-            customToastify.success('Thanh toán thành công');
-            navigate('/order');
+            if (paymentMethod == 'MOMO' && resOrder && resOrder.data?.statusCode === 200) {
+                var resMoMo = await getMomoLinkPaymentService({
+                    amount: resOrder.data?.totalAmount,
+                    orderId: resOrder.data?.orderId,
+                    orderInfo: `Thanh toán ${resOrder.data?.totalAmount} cho đơn hàng ${resOrder.data?.orderId}`,
+                });
+
+                if (resMoMo.status === 200) {
+                    window.location.href = resMoMo.data?.payUrl;
+                }
+            } else if (paymentMethod == 'VNPAY' && resOrder && resOrder.data?.statusCode === 200) {
+                var resVnpay = await getVnpayLinkPaymentService({
+                    amount: resOrder.data?.totalAmount,
+                    orderId: resOrder.data?.orderId,
+                    orderInfo: `Thanh toán ${resOrder.data?.totalAmount} cho đơn hàng ${resOrder.data?.orderId}`,
+                });
+
+                if (resVnpay.status === 200) {
+                    window.location.href = resVnpay.data?.payUrl;
+                }
+            } else {
+                customToastify.success('Đặt hàng thành công');
+                navigate('/order');
+            }
+
+            // setIsCheckout(true);
         } catch (error) {
             console.log(error);
+            // setIsCheckout(false);
 
-            customToastify.error('Thanh toán thất bại. Vui lòng thử lại!');
+            customToastify.error('Đặt hàng thất bại. Vui lòng thử lại!');
         } finally {
             dispatch(setLoading(false));
             // setPaying(false);
         }
+    };
+
+    useEffect(() => {
+        let connection = new HubConnectionBuilder()
+            .withUrl('https://localhost:7193/notificationHub')
+            .withAutomaticReconnect()
+            .build();
+
+        connection
+            .start()
+            .then(() => {
+                console.log('connection to hubs');
+
+                customToastify.info('Checkouted');
+            })
+            .catch((err) => console.error('Connection error: ', err));
+
+        connection.on('OnConnected', () => {
+            OnConnected();
+        });
+
+        setNotificationsConnection(connection);
+
+        const OnConnected = () => {
+            var username = user?.username;
+
+            console.log(username);
+
+            if (username) {
+                // connection.invoke('SaveUserConnection', username).catch(function (err) {
+                //     return console.error(err.toString());
+                // });
+            }
+        };
+
+        if (connection) {
+            connection.on('ReceivedNotification', function (msg) {
+                console.log(msg);
+                customToastify.info(msg);
+                // DisplayGeneralNotification(msg, 'General message.');
+            });
+        }
+
+        // return () => {
+        //     if (connection) connection.stop();
+        // };
+    }, [user]);
+
+    const handleSendMessage = () => {
+        // Gửi thông báo đến admin sau khi đặt hàng thành công
     };
 
     return (
@@ -163,36 +256,88 @@ const Checkout = () => {
             </div>
 
             <form>
+                <div>
+                    <h4>Thông tin người nhận</h4>
+                </div>
+
                 <Row>
                     <Col>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" value={user?.displayName} />
-                            <label for="floatingInput">Họ tên người nhận</label>
+                        <div className="form-floating mb-3">
+                            <input type="text" className="form-control" value={user?.displayName} />
+                            <label htmlFor="floatingInput">Họ tên người nhận</label>
                         </div>
 
-                        <div class="form-floating mb-3">
+                        <div className="form-floating mb-3">
                             <input
                                 type="email"
-                                class="form-control"
+                                className="form-control"
                                 placeholder="name@example.com"
                                 value={user?.email}
                             />
-                            <label for="floatingInput">Địa chỉ email</label>
+                            <label htmlFor="floatingInput">Địa chỉ email</label>
                         </div>
                     </Col>
 
                     <Col>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" value={user?.phoneNumber} />
-                            <label for="floatingInput">Số điện thoại liên hệ</label>
+                        <div className="form-floating mb-3">
+                            <input type="text" className="form-control" value={user?.phoneNumber} />
+                            <label htmlFor="floatingInput">Số điện thoại liên hệ</label>
                         </div>
 
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" value={user?.address} />
-                            <label for="floatingInput">Địa chỉ nhận hàng</label>
+                        <div className="form-floating mb-3">
+                            <input type="text" className="form-control" value={user?.address} />
+                            <label htmlFor="floatingInput">Địa chỉ nhận hàng</label>
                         </div>
                     </Col>
                 </Row>
+
+                <div className="mb-3">
+                    <div>
+                        <h4>Phương thức thanh toán</h4>
+                    </div>
+
+                    <div>
+                        <div className="form-check">
+                            <input
+                                onChange={() => setPaymentMethod('COD')}
+                                checked
+                                className="form-check-input"
+                                type="radio"
+                                name="payment_method"
+                                id="cod"
+                            />
+                            <label className="form-check-label" htmlFor="cod">
+                                Thanh toán khi nhận hàng
+                            </label>
+                        </div>
+
+                        <div className="form-check mt-2">
+                            <input
+                                onChange={() => setPaymentMethod('MOMO')}
+                                className="form-check-input"
+                                type="radio"
+                                name="payment_method"
+                                id="momo_pay"
+                            />
+                            <label className="form-check-label" htmlFor="momo_pay">
+                                Thanh toán bằng MOMO
+                            </label>
+                        </div>
+
+                        <div className="form-check mt-2">
+                            <input
+                                onChange={() => setPaymentMethod('VNPAY')}
+                                className="form-check-input"
+                                type="radio"
+                                name="payment_method"
+                                id="vnpay_pay"
+                            />
+                            <label className="form-check-label" htmlFor="vnpay_pay">
+                                Thanh toán bằng VNPAY
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
                 <div>
                     <button
@@ -202,6 +347,10 @@ const Checkout = () => {
                         className="btn btn-primary"
                     >
                         Đặt hàng
+                    </button>
+
+                    <button type="button" onClick={() => handleSendMessage()}>
+                        Check signalr
                     </button>
                 </div>
             </form>

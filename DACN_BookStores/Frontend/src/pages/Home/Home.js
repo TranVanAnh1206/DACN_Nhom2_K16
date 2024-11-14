@@ -13,6 +13,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import { connect } from 'formik';
 import { getAllGenresService } from '~/services/genreService';
 import { Col, Row } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -52,28 +53,6 @@ const Home = () => {
         fetchBestSeller();
     }, []);
 
-    useEffect(() => {
-        var notificationsconnection = new HubConnectionBuilder()
-            .withUrl('https://localhost:7193/notificationHub')
-            .withAutomaticReconnect()
-            .build();
-
-        notificationsconnection
-            .start()
-            .then(() => {
-                console.log('connection to hubs');
-            })
-            .catch((err) => console.error('Connection error: ', err));
-
-        notificationsconnection.on('OnConnected', () => {
-            OnConnected();
-        });
-
-        const OnConnected = () => {
-            //
-        };
-    }, []);
-
     var settings = {
         dots: true,
         infinite: true,
@@ -96,10 +75,13 @@ const Home = () => {
 
                             {genres?.map((item, index) => {
                                 return (
-                                    <div className={clsx(styles['category-item'])} key={`genre-${item.id}`}>
+                                    <Link
+                                        to={`/search?genres=${item.name}`}
+                                        className={clsx(styles['category-item'], 'text-black')}
+                                        key={`genre-${item.id}`}
+                                    >
                                         <p>{item.name}</p>
-                                        <p></p>
-                                    </div>
+                                    </Link>
                                 );
                             })}
                         </div>

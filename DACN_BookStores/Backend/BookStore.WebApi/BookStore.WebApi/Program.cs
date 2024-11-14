@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using BookStore.Bussiness.ViewModel.Payment.Momo;
 using BookStore.WebApi.Hubs;
 using BookStore.WebApi.SubscribeTableDependencies;
+using BookStore.Bussiness.ViewModel.Payment.Vnpay;
 
 namespace BookStore.WebApi
 {
@@ -59,6 +60,8 @@ namespace BookStore.WebApi
 
                 builder.Services.AddControllers().AddNewtonsoftJson();
                 builder.Services.AddEndpointsApiExplorer();
+
+                builder.Services.AddHttpContextAccessor();
 
                 #region Swagger
                 builder.Services.AddApiVersioning(options =>
@@ -153,7 +156,7 @@ namespace BookStore.WebApi
                     options.UseSqlServer(connectionString).EnableSensitiveDataLogging();
                 }, ServiceLifetime.Scoped);
 
-                builder.Services.AddHttpClient<Bussiness.Services.PaymentRequestService>();
+                //builder.Services.AddHttpClient<Bussiness.Services.PaymentRequestService>();
 
                 #region Config identity
                 builder.Services.AddIdentity<User, IdentityRole>(options =>
@@ -227,7 +230,8 @@ namespace BookStore.WebApi
                 builder.Services.AddSingleton(mapper);
                 #endregion
 
-                #region Đăng ký Momoconfig
+                #region Đăng ký payment config
+                builder.Services.Configure<VnpayConfig>(builder.Configuration.GetSection(VnpayConfig.ConfigName));
                 builder.Services.Configure<MomoConfig>(builder.Configuration.GetSection(MomoConfig.ConfigName));
                 #endregion
                 
@@ -264,6 +268,7 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IReportService, ReportService>();
                 builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
                 builder.Services.AddScoped<IVoucherService, VoucherService>();
+                builder.Services.AddScoped<IPaymentService, PaymentService>();
 
                 builder.Services.AddScoped<NotificationHub>();
                 builder.Services.AddScoped<SubscribeNotificationTableDependency>();

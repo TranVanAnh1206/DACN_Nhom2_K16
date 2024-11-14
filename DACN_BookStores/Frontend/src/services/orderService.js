@@ -9,13 +9,14 @@ export const getOrderService = ({ status, sorted = 'date' } = {}) => {
     });
 };
 
-export const orderService = ({ userId, voucherId = 0, orderList }) => {
+export const orderService = ({ userId, date, paymentMethod, status, voucherId = 0, orderItems }) => {
     return axios.post('/Orders/order', {
         userId,
-        status: 4,
-        date: new Date().toISOString(),
+        date,
+        paymentMethod,
         voucherId,
-        orderItems: orderList,
+        status: status,
+        orderItems: orderItems,
     });
 };
 

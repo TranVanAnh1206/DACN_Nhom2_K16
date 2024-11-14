@@ -9,6 +9,7 @@ using BookStore.Models.Enums;
 using BookStore.Models.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json.Linq;
 
 namespace BookStore.Bussiness.Services
 {
@@ -63,11 +64,15 @@ namespace BookStore.Bussiness.Services
             return _mapper.Map<OrderViewModel>(entity);
         }
 
-        public override async Task<int> CreateAsync(OrderCreateViewModel create)
+        public async Task<JObject> CreateAsync(OrderCreateViewModel create)
         {
             if (create.OrderItems == null || create.OrderItems.Count() == 0)
             {
-                return 0;
+                return new JObject
+                {
+                    ["StatusCode"] = 0,
+                    ["Message"] = "Không ông thể đặt hàng."
+                };
             }
 
             decimal totalAmount = 0;
@@ -88,12 +93,20 @@ namespace BookStore.Bussiness.Services
                 {
                     if (resUseVoucher.StatusCode == 123)
                     {
-                        return 2;
+                        return new JObject
+                        {
+                            ["StatusCode"] = 2,
+                            ["Message"] = "Đã đạt giới hạn sử dụng của mã giảm giá."
+                        }; ;
                     }
 
                     if (resUseVoucher.StatusCode == 404)
                     {
-                        return 3;
+                        return new JObject
+                        {
+                            ["StatusCode"] = 3,
+                            ["Message"] = "Không tìm thấy thẻ giảm giá"
+                        }; ;
                     }
 
                     totalAmount = totalAmount - voucher.DiscountAmount;
@@ -108,7 +121,11 @@ namespace BookStore.Bussiness.Services
 
             if (order == null)
             {
-                return 0;
+                return new JObject
+                {
+                    ["StatusCode"] = 0,
+                    ["Message"] = "Không ông thể đặt hàng."
+                };
             }
 
             var cart = await _cartService.GetCartByUserId(create.UserId, new[] { "CartItems" });
@@ -124,7 +141,13 @@ namespace BookStore.Bussiness.Services
                 }
             }
 
-            return 1;
+            return new JObject
+            {
+                ["StatusCode"] = 1,
+                ["Message"] = "Đặt hàng thành công!",
+                ["OrderId"] = order.Id,
+                ["TotalAmount"] = totalAmount.ToString()
+            };
         }
 
         public async Task<PaginationSet<OrderViewModel>> GetOrders(OrderSpecification spec, PaginationParams pageParams)

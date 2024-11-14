@@ -25,6 +25,8 @@ namespace BookStore.Models.Models
 
         public DateTime Date { get; set; } = DateTime.Now;
 
+        public string PaymentMethod { get; set; }
+
 
         public ICollection<OrderItem> OrderItems { get; set; }
     }

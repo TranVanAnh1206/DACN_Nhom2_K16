@@ -18,12 +18,18 @@
             margin-bottom: 1.6rem;
         }
 
-        .order-status {
-            text-align: end;
-            font-size: 15px;
-            color: #ee4d2d;
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             border-bottom: 0.1rem solid #d9d9d9;
-            padding-bottom: 12px;
+
+            .order-status {
+                text-align: end;
+                font-size: 15px;
+                color: #ee4d2d;
+                padding-bottom: 12px;
+            }
         }
 
         .order-book-info {

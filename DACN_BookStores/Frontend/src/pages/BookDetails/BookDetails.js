@@ -37,6 +37,7 @@ const BookDetails = () => {
     const [timeDisableAddToCart, setTimeDisableAddToCart] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [bookInfo, setBookInfo] = useState({
+        id: '',
         name: '',
         description: '',
         image: '',
@@ -60,6 +61,7 @@ const BookDetails = () => {
 
             if (res?.data) {
                 setBookInfo({
+                    id: res?.data?.id,
                     name: res.data?.title,
                     description: res.data?.description,
                     image: res.data?.image,

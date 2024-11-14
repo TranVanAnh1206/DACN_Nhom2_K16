@@ -2,11 +2,13 @@
 using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Models.Enums;
+using Newtonsoft.Json.Linq;
 
 namespace BookStore.Bussiness.Interfaces
 {
     public interface IOrderService : IBaseService<OrderViewModel, OrderCreateViewModel, OrderUpdateViewModel>
     {
+        Task<JObject> CreateAsync(OrderCreateViewModel create);
         Task<PaginationSet<OrderViewModel>> GetOrders(OrderSpecification spec, PaginationParams pageParams);
         Task<OrderViewModel> GetOrder(int orderId, string userId, string[] includes = null);
         Task<IEnumerable<OrderViewModel>> GetOrdersUser(string userId, OrderSpecification spec, string[] includes);

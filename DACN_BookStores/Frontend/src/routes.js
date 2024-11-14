@@ -16,18 +16,21 @@ import Register from './pages/Register';
 import NoNavbarLayout from './layouts/NoNavbarLayout';
 import AccountInfor from './pages/AccountInfor/AccountInfor';
 import Checkout from './pages/Checkout';
+import { PaymentMoMoReturn, PaymentVnpayReturn } from './pages/PaymentReturn';
 
 const routes = [
     { path: '/', element: Home },
     { path: '/login', element: Login, layout: null },
     { path: '/register', element: Register, layout: null },
-    { path: '/book/:id', element: BookDetails },
+    { path: '/book/:id', element: BookDetails, layout: NoNavbarLayout },
     { path: '/search', element: SearchResult },
     { path: '/cart', element: Cart, layout: NoNavbarLayout },
     { path: '/order', element: Order, layout: NoNavbarLayout },
     { path: '/404', element: NotFound, layout: null },
     { path: '/account-infor', element: AccountInfor, layout: NoNavbarLayout },
     { path: '/checkout', element: Checkout, layout: NoNavbarLayout },
+    { path: '/payment-vnpay-return', element: PaymentVnpayReturn, layout: null },
+    { path: '/payment-momo-return', element: PaymentMoMoReturn, layout: null },
 ];
 
 export const adminRoutes = [{ path: '/admin', element: AdminPage, layout: AdminLayout }];

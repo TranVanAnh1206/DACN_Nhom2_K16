@@ -381,7 +381,7 @@ namespace BookStore.Datas.SeedingDatas
                     },
                     new Book
                     {
-                        Description =  "Viên nhộng năng lượng đột nhiên bị đánh cắp khỏi Trung tâm năng lượng khiến mọi hoạt động của thành phố tương lai đều bị ngưng trệ. Đội quân Doraemon nhận nhiệm vụ áp tải viên nhộng dự bị đến Trung tâm năng lượng trên một chiếc tàu hỏa cổ lỗ có tên là "Roko". Suốt cuộc hành trình, nhà khoa học xấu xa Achimov đã dùng mọi thủ đoạn phá hoại... Liệu Đội quân Doraemon có hoàn thành nhiệm vụ hay không, chúng ta hãy cùng theo dõi nhé! Đây là phiên bản tranh truyện màu được vẽ lại từ tập phim hoạt hình cùng tên của tác giả Fujiko.F.Fujio.",
+                        Description =  "Viên nhộng năng lượng đột nhiên bị đánh cắp khỏi Trung tâm năng lượng khiến mọi hoạt động của thành phố tương lai đều bị ngưng trệ. Đội quân Doraemon nhận nhiệm vụ áp tải viên nhộng dự bị đến Trung tâm năng lượng trên một chiếc tàu hỏa cổ lỗ có tên là \"Roko\". Suốt cuộc hành trình, nhà khoa học xấu xa Achimov đã dùng mọi thủ đoạn phá hoại... Liệu Đội quân Doraemon có hoàn thành nhiệm vụ hay không, chúng ta hãy cùng theo dõi nhé! Đây là phiên bản tranh truyện màu được vẽ lại từ tập phim hoạt hình cùng tên của tác giả Fujiko.F.Fujio.",
                         Price =  29400,
                         Remaining =  9,
                         PublishedAt = DateTime.Parse("2023-08-30"),
