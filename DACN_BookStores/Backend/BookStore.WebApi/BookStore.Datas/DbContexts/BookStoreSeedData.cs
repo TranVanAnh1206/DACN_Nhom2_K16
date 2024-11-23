@@ -21,8 +21,7 @@ namespace BookStore.Datas.DbContexts
                 {
                     #region Dữ liệu Seeding Books
 
-                    var books = await (new ProductDataSeedContributor(genges, publishers)).BookSeederAsync(context, serviceProvider);
-
+                    var books = await (new ProductDataSeedContributor(context, genges, publishers)).BookSeederAsync(context, serviceProvider);
 
                     List<Review> reviews = new List<Review>
                 {
@@ -608,8 +607,7 @@ namespace BookStore.Datas.DbContexts
 
                 }
 
-                var vouchers = await VoucherDataSeedContributor.VoucherSeederAsync(context, serviceProvider);
-                
+                var vouchers = await VoucherDataSeedContributor.VoucherSeederAsync(context, serviceProvider);                
 
                 if (context.ChangeTracker.HasChanges())
                 {

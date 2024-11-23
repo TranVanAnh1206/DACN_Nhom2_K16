@@ -12,7 +12,7 @@ import { styled, Box, Card, Grid, Checkbox, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { userLogin } from '~/redux/actions/authAction';
 import { setLoading } from '~/redux/slices/loadingSlide';
-import { saveUserInfo } from '~/redux/actions';
+import { saveUserInfo, saveUserInfors } from '~/redux/actions';
 
 // STYLED COMPONENTS
 const FlexBox = styled(Box)(() => ({
@@ -114,10 +114,11 @@ function Login() {
                 const token = res.data.token;
                 localStorage.setItem('token', token);
 
-                await dispatch(saveUserInfo());
+                await dispatch(saveUserInfors());
 
                 dispatch(setLoading(false));
                 navigate('/');
+                customToastify.success('Đăng nhập thành công!');
             }
         } catch (error) {
             dispatch(setLoading(false));

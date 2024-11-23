@@ -7,9 +7,11 @@ namespace BookStore.Datas.SeedingDatas
     {
         private List<Book> _books;
 
-        public ProductDataSeedContributor(List<BookGroup> genges, List<Publisher> publishers)
+        public ProductDataSeedContributor(BookStoreDbContext context, List<BookGroup> genges, List<Publisher> publishers)
         {
-            _books = new List<Book>
+            if (!context.Books.Any())
+            {
+                _books = new List<Book>
                 {
                     new Book
                     {
@@ -393,7 +395,7 @@ namespace BookStore.Datas.SeedingDatas
                         TotalPageNumber =  96
                     },
                 };
-
+            }
         }
 
         public async Task<List<Book>> BookSeederAsync(BookStoreDbContext context, IServiceProvider serviceProvider)

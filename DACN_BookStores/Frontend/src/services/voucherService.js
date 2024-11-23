@@ -8,4 +8,12 @@ const getVoucherByIdService = ({ id }) => {
     return axios.get(`/Vouchers/voucher/${id}`);
 };
 
-export { getMyVoucherService, getVoucherByIdService };
+const CreateVoucherService = (data) => {
+    return axios.post('/Vouchers', data);
+};
+
+const DeleteVoucherService = (id) => {
+    return axios.delete(`/Vouchers/${id}`);
+};
+
+export { getMyVoucherService, getVoucherByIdService, CreateVoucherService, DeleteVoucherService };

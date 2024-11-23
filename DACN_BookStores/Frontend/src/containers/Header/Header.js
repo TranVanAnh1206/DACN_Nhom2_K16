@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import styles from './Header.module.scss';
-import logo from '~/assets/imgs/VEdu.png';
+import logo from '~/assets/imgs/logo-nhasachtritue-2.png';
 import AccountAvatar from '~/components/AccountAvatar';
 import { useContext, useEffect, useRef, useState } from 'react';
 import useDebounce from '~/hooks/useDebounce';
@@ -87,7 +87,7 @@ const Header = () => {
         <div className={clsx(styles['header'])}>
             <div className={clsx(styles['header-content'], 'container')}>
                 <Link to="/">
-                    <img width={50} height={50} src={logo} alt="VEdu" />
+                    <img height={70} src={logo} alt="logo-nhasachtritue" />
                 </Link>
 
                 <div className={clsx(styles['search-wrapper'])}>

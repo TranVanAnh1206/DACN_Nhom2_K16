@@ -8,15 +8,14 @@ namespace BookStore.Datas.SeedingDatas
     {
         public static async Task<List<Author>> AuthorSeeder(BookStoreDbContext context, IServiceProvider serviceProvider)
         {
-            #region Dữ liệu Seeding Authors
-            // Authors
-            var authorDatas = File.ReadAllText("../BookStore.Datas/SeedingDatas/DataJsons/Author.json");
-            var authors = JsonSerializer.Deserialize<List<Author>>(authorDatas);
-
+            #region Dữ liệu Seeding Authors            
             if (!context.Authors.Any())
             {
                 try
                 {
+                    var authorDatas = File.ReadAllText("../BookStore.Datas/SeedingDatas/DataJsons/Author.json");
+                    var authors = JsonSerializer.Deserialize<List<Author>>(authorDatas);
+
                     await context.Authors.AddRangeAsync(authors);
 
                     if (context.ChangeTracker.HasChanges())

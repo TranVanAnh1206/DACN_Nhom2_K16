@@ -151,6 +151,7 @@ namespace BookStore.WebApi
                 #endregion
 
                 var connectionString = builder.Configuration.GetConnectionString("DefaultCOnnection");
+                //var connectionString = builder.Configuration.GetConnectionString("DefautlConnectionSqlExpress");
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
                     options.UseSqlServer(connectionString).EnableSensitiveDataLogging();

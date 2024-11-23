@@ -22,8 +22,5 @@ namespace BookStore.Bussiness.ViewModel.Voucher
 
         [Required]
         public int MaxUsage { get; set; }
-
-        [Required]
-        public int CurrentUsage { get; set; }
     }
 }

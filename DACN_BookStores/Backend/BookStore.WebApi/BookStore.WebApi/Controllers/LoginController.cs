@@ -96,62 +96,54 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel register)
         {
-            try
+            var userParse = _mapper.Map<User>(register);
+
+            var userNameIsExist = await _userManager.FindByNameAsync(userParse.UserName);
+
+            if (userNameIsExist != null)
             {
-                var userParse = _mapper.Map<User>(register);
-
-                var userNameIsExist = await _userManager.FindByNameAsync(userParse.UserName);
-
-                if (userNameIsExist != null)
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
                 {
-                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
-                    {
-                        property = "UserName",
-                        Message = "Tên người dùng đã tồn tại"
-                    }));
-                }
-
-                var emailIsExist = await _userManager.FindByEmailAsync(userParse.Email);
-
-                if (emailIsExist != null)
-                {
-                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
-                    {
-                        property = "Email",
-                        Message = "Email đã tồn tại"
-                    }));
-                }
-
-                var res = await _authService.Register(register);
-
-                if (res == null)
-                    return BadRequest("Không thể đăng ký người dùng mới");
-
-                var userId = await _userManager.GetUserIdAsync(res);
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(res);
-                // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var confirmEmailResult = await _userManager.ConfirmEmailAsync(res, code);
-
-                ////var callbackUrl = Url.Page(
-                ////"/Account/ConfirmEmail",
-                ////pageHandler: null,
-                ////values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                ////        protocol: Request.Scheme);
-
-                //var callbackUrl = Url.Action("ConfirmEmail", "Login", new { userId = res.Id, token = code }, Request.Scheme);
-
-                //await _emailSender.SendEmailAsync(res.Email, "Confirm your email",
-                //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                var uservm = _mapper.Map<UserViewModel>(res);
-
-                return Ok(uservm);
+                    property = "UserName",
+                    Message = "Tên người dùng đã tồn tại"
+                }));
             }
-            catch (Exception ex)
+
+            var emailIsExist = await _userManager.FindByEmailAsync(userParse.Email);
+
+            if (emailIsExist != null)
             {
-                _logger.LogError(ex.Message);
-                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
+                {
+                    property = "Email",
+                    Message = "Email đã tồn tại"
+                }));
             }
+
+            var res = await _authService.Register(register);
+
+            if (res == null)
+                return BadRequest("Không thể đăng ký người dùng mới");
+
+            var userId = await _userManager.GetUserIdAsync(res);
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(res);
+            // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var confirmEmailResult = await _userManager.ConfirmEmailAsync(res, code);
+
+            ////var callbackUrl = Url.Page(
+            ////"/Account/ConfirmEmail",
+            ////pageHandler: null,
+            ////values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+            ////        protocol: Request.Scheme);
+
+            //var callbackUrl = Url.Action("ConfirmEmail", "Login", new { userId = res.Id, token = code }, Request.Scheme);
+
+            //await _emailSender.SendEmailAsync(res.Email, "Confirm your email",
+            //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            var uservm = _mapper.Map<UserViewModel>(res);
+
+            return Ok(uservm);
         }
 
         /// <summary>

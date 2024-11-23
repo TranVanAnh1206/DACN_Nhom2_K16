@@ -26,7 +26,6 @@ namespace BookStore.Datas.DbContexts
         public DbSet<HubConnection> HubConnections { get; set; }
         public DbSet<Notification> Notifications { get; set; }
 
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

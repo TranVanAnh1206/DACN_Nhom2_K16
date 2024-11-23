@@ -8,6 +8,7 @@ import Statistic from './Statistic';
 import ManageGenre from './ManageGenre';
 import ManageOrder from './ManageOrder';
 import { useState } from 'react';
+import VouchersManager from './VouchersManager';
 
 const AdminPage = () => {
     const [spinning, setSpinning] = useState(false);
@@ -42,6 +43,11 @@ const AdminPage = () => {
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
+                        <Nav.Link style={{ fontSize: '2rem' }} eventKey="manager-vouchers">
+                            Manager Vouchers
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
                         <Nav.Link style={{ fontSize: '2rem' }} eventKey="statistic">
                             Statistic
                         </Nav.Link>
@@ -62,6 +68,9 @@ const AdminPage = () => {
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-order">
                         <ManageOrder setSpinning={setSpinning} />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey={'manager-vouchers'}>
+                        <VouchersManager setSpinning={setSpinning} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="statistic">
                         <Statistic setSpinning={setSpinning} />

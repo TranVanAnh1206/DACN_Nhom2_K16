@@ -1,17 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 using BookStore.Datas.DbContexts;
+using Microsoft.Extensions.Configuration;
 
-namespace TranVanAnh_QuizzApp.Core.Data
+namespace BookStore.Datas.DbContexts
 {
-    //public class BloggingContextFactory : IDesignTimeDbContextFactory<BookStoreDbContext>
-    //{
-    //    public BookStoreDbContext CreateDbContext(string[] args)
-    //    {
-    //        var optionsBuilder = new DbContextOptionsBuilder<BookStoreDbContext>();
-    //        optionsBuilder.UseSqlServer("Server=localhost,1433;Database=QuizApp;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False");
+    public class BookStoreContextFactory : IDesignTimeDbContextFactory<BookStoreDbContext>
+    {
+        private readonly IConfiguration _configuration;
 
-    //        return new BookStoreDbContext(optionsBuilder.Options);
-    //    }
-    //}
+        public BookStoreContextFactory(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public BookStoreDbContext CreateDbContext(string[] args)
+        {
+            var connectionString = _configuration.GetConnectionString("DefaultCOnnection");
+            //var connectionString = _configuration.GetConnectionString("DefautlConnectionSqlExpress");
+            var optionsBuilder = new DbContextOptionsBuilder<BookStoreDbContext>();
+            optionsBuilder.UseSqlServer(connectionString);
+
+            return new BookStoreDbContext(optionsBuilder.Options);
+        }
+    }
 }

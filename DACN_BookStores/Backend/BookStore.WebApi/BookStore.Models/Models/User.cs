@@ -4,7 +4,7 @@ namespace BookStore.Models.Models
 {
     public class User : IdentityUser
     {
-        public string DisplayName { get; set; }
+        public string? DisplayName { get; set; }
 
         public string? Address { get; set; }
 

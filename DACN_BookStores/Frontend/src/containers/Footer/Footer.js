@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
-import logo from '~/assets/imgs/VEdu.png';
+import logo from '~/assets/imgs/logo-nhasachtritue.png';
 import footerBct from '~/assets/imgs/footerBct.png';
 import facebook from '~/assets/imgs/facebook-social.png';
 import shopee from '~/assets/imgs/shopee-social.png';
@@ -15,7 +15,7 @@ const Footer = () => {
             <div className={clsx(styles['content'], 'container')}>
                 <div className={clsx(styles['contact'])}>
                     <Link to="/">
-                        <img width={210} height={180} src={logo} alt="VEdu" />
+                        <img width={210} height={180} src={logo} alt="logo-nhasachtritue" />
                     </Link>
                     <div className={clsx(styles['contact-info'])}>
                         <h4 className={clsx(styles['store-name'])}>Nhà sách trí tuệ</h4>
