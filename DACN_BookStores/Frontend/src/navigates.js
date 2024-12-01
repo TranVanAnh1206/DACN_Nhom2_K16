@@ -38,11 +38,11 @@ const adminNavigations = [
 
 const clientNavigations = [
     {
-        name: 'Home',
+        name: 'Trang chủ',
         path: '/',
     },
     {
-        name: 'Contact',
+        name: 'Liên hệ',
         path: '/contact',
     },
     {
@@ -50,7 +50,7 @@ const clientNavigations = [
         path: 'blog',
     },
     {
-        name: 'About us',
+        name: 'Về chúng tôi',
         path: '/aboutus',
     },
 ];

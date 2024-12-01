@@ -1,14 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './AccountAvatar.module.scss';
 import Logout from '~/components/Logout';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
 import { useSelector } from 'react-redux';
-import { userInfoSelector } from '~/redux/selectors';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import { icon } from '@fortawesome/fontawesome-svg-core';
 
 const AccountAvatar = () => {
     const userInfo = useSelector((state) => state.user);
@@ -20,8 +16,8 @@ const AccountAvatar = () => {
     ];
     const adminMenu = [
         {
-            title: 'Admin page',
-            path: '/admin',
+            title: 'Quản trị hệ thống',
+            path: '/admin/manage-users',
             icon: '',
         },
     ];

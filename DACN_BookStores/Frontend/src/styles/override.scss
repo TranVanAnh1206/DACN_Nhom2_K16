@@ -220,8 +220,10 @@ body {
 
 .react-datepicker__input-container input {
     font-size: $main-front-size;
-    padding: 1rem;
-    height: 4rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    outline: none;
+    border: 1px solid #dee2e6;
 }
 
 /**

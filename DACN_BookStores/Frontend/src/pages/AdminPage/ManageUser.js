@@ -1,13 +1,14 @@
 import { Button, Col, Modal, Pagination, Form, Row } from 'react-bootstrap';
-import clsx from 'clsx';
-import styles from './AdminPage.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { CSVLink } from 'react-csv';
 import { getAllUsersService, userCreateByAdminService } from '~/services/userServices';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import './StyleManage.css';
+// import './StyleManage.css';
 
 const ManageUser = ({ setSpinning }) => {
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
 
     const headersExportUser = [
@@ -148,23 +149,25 @@ const ManageUser = ({ setSpinning }) => {
     };
 
     return (
-        <>
-            <div className="d-flex justify-content-between">
-                <div className={clsx('d-flex align-items-center mb-3', styles['search-user-input'])}>
-                    <input
-                        value={searchUserKeyword}
-                        className={clsx('fz-16 form-control')}
-                        placeholder="Tìm kiếm theo email/số điện thoại"
-                        onChange={(e) => setSearchUserKeyword(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                                handleSearchUser();
-                            }
-                        }}
-                    />
+        <div id="manage-users">
+            <div className="d-flex justify-content-between flex-wrap mb-2 gap-2">
+                <div className="d-flex align-items-center search-user-input flex-wrap mb-2 gap-2">
+                    <div>
+                        <input
+                            value={searchUserKeyword}
+                            className="fz-16 form-control"
+                            placeholder="Tìm kiếm theo email/số điện thoại"
+                            onChange={(e) => setSearchUserKeyword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSearchUser();
+                                }
+                            }}
+                        />
+                    </div>
                     <Button
                         variant="primary"
-                        className="fz-16 ms-3"
+                        className="fz-16"
                         style={{ whiteSpace: 'nowrap' }}
                         onClick={handleSearchUser}
                     >
@@ -173,49 +176,51 @@ const ManageUser = ({ setSpinning }) => {
                 </div>
                 <div>
                     <button className="btn btn-primary fz-16 me-4" onClick={handleShowModalAddUser}>
-                        Tạo user
+                        Tạo mới
                     </button>
                     <CSVLink data={userList} headers={headersExportUser} filename="Users-Sale-Book.csv" separator=";">
-                        <button className="btn btn-success fz-16">Export to Excel</button>
+                        <button className="btn btn-success fz-16">Xuất file excel</button>
                     </CSVLink>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Phone Number</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {userList?.length > 0 ? (
-                        userList?.map((user) => {
-                            return (
-                                <tr key={`user-${user?.id}`}>
-                                    <td>{user?.username}</td>
-                                    <td>{user?.email}</td>
-                                    <td>{user?.address}</td>
-                                    <td>{user?.phoneNumber}</td>
-                                </tr>
-                            );
-                        })
-                    ) : (
+            <div className="table-container table-responsive">
+                <table className="table table-striped table-bordered">
+                    <thead>
                         <tr>
-                            <td colSpan={5}>
-                                <div className="fz-16 text-center">Không có user nào</div>
-                            </td>
+                            <th className='text-center text-nowrap'>Họ và tên</th>
+                            <th className='text-center text-nowrap'>Email</th>
+                            <th className='text-center text-nowrap'>Địa chỉ</th>
+                            <th className='text-center text-nowrap'>Số điện thoại</th>
                         </tr>
-                    )}
-                </tbody>
-            </table>
-            <Pagination className="d-flex justify-content-center">
+                    </thead>
+                    <tbody>
+                        {userList?.length > 0 ? (
+                            userList?.map((user) => {
+                                return (
+                                    <tr key={`user-${user?.id}`}>
+                                        <td>{user?.username}</td>
+                                        <td>{user?.email}</td>
+                                        <td>{user?.address}</td>
+                                        <td className='text-center'>{user?.phoneNumber}</td>
+                                    </tr>
+                                );
+                            })
+                        ) : (
+                            <tr>
+                                <td colSpan={5}>
+                                    <div className="fz-16 text-center">Không có người dùng nào</div>
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+            <Pagination className="d-flex justify-content-center my-2">
                 {Array.from({ length: totalPage }, (_, i) => (i = i + 1))?.map((i) => {
                     return (
                         <Pagination.Item
                             key={i}
-                            className={clsx(styles['page-number'])}
+                            className="page-number"
                             active={i === currentPageUser}
                             onClick={() => handleChangePage(i)}
                         >
@@ -227,7 +232,7 @@ const ManageUser = ({ setSpinning }) => {
             <Modal show={showModalAddUser} onHide={handleCloseModalAddUser}>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        <div className={clsx(styles['modal-sign-up-title'])}>Tạo user</div>
+                        <div className="modal-sign-up-title">Tạo mới</div>
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -237,9 +242,7 @@ const ManageUser = ({ setSpinning }) => {
                                 ref={usernameSignupRef}
                                 value={createUserInfo.username}
                                 name="username"
-                                className={clsx('fz-16', {
-                                    [styles['invalid']]: errorCreateUser.field === 'UserName',
-                                })}
+                                className={`fz-16 ${errorCreateUser.field === 'UserName' && 'invalid'}`}
                                 placeholder="Tài khoản"
                                 required
                                 onKeyUp={handleEnterToSignup}
@@ -257,9 +260,7 @@ const ManageUser = ({ setSpinning }) => {
                                 value={createUserInfo.email}
                                 name="email"
                                 type="email"
-                                className={clsx('fz-16', {
-                                    [styles['invalid']]: errorCreateUser.field === 'Email',
-                                })}
+                                className={`fz-16 ${errorCreateUser.field === 'Email' && 'invalid'}`}
                                 placeholder="Email"
                                 required
                                 onKeyUp={handleEnterToSignup}
@@ -289,13 +290,13 @@ const ManageUser = ({ setSpinning }) => {
                             </Form.Control.Feedback>
                             {showPasswordCreateUser ? (
                                 <FontAwesomeIcon
-                                    className={clsx(styles['show-hide-password'])}
+                                    className="show-hide-password"
                                     icon={faEye}
                                     onClick={toggleShowPasswordCreateUser}
                                 />
                             ) : (
                                 <FontAwesomeIcon
-                                    className={clsx(styles['show-hide-password'])}
+                                    className="show-hide-password"
                                     icon={faEyeSlash}
                                     onClick={toggleShowPasswordCreateUser}
                                 />
@@ -313,8 +314,8 @@ const ManageUser = ({ setSpinning }) => {
                                     required
                                     onChange={handleChangeFormCreateUser}
                                 >
-                                    <option value="User">User</option>
-                                    <option value="Admin">Admin</option>
+                                    <option value="User">Khách hàng</option>
+                                    <option value="Admin">Quản trị</option>
                                 </Form.Select>
                             </Col>
                             <Form.Control.Feedback className="fz-16" type="invalid">
@@ -354,12 +355,12 @@ const ManageUser = ({ setSpinning }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className={clsx('fz-16', styles['sign-up-btn'])} onClick={handleSubmitFormCreateUser}>
+                    <Button className="fz-16 sign-up-btn" onClick={handleSubmitFormCreateUser}>
                         Đăng ký
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     );
 };
 

@@ -10,6 +10,7 @@ import clsx from 'clsx';
 import styles from './AdminPage.module.scss';
 
 const Statistic = () => {
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
 
     const [filterType, setFilterType] = useState('DAY');
@@ -112,10 +113,9 @@ const Statistic = () => {
 
     return (
         <div>
-            <h2>Thống kê</h2>
             <Form>
                 <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>
+                    <Form.Label column sm={2} className="fs-6 text-nowrap">
                         Lọc theo
                     </Form.Label>
                     <Col sm={10}>
@@ -130,10 +130,10 @@ const Statistic = () => {
                 {filterType === 'DAY' && (
                     <>
                         <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm={2}>
+                            <Form.Label column sm={2} className="fs-6 text-nowrap">
                                 Ngày bắt đầu
                             </Form.Label>
-                            <Col sm={10}>
+                            <Col sm={10} style={{padding: "6px 12px"}}>
                                 <DatePicker
                                     selected={startDate}
                                     maxDate={Date.now()}
@@ -142,12 +142,13 @@ const Statistic = () => {
                                     showYearDropdown
                                     scrollableYearDropdown
                                     showMonthDropdown
+                                    
                                 />
                             </Col>
                         </Form.Group>
 
                         <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm={2}>
+                            <Form.Label column sm={2} className="fs-6 text-nowrap">
                                 Ngày kết thúc
                             </Form.Label>
                             <Col sm={10}>
@@ -169,7 +170,7 @@ const Statistic = () => {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>
+                        <th className='text-center'>
                             <div className="d-flex align-items-center justify-content-between">
                                 <div>
                                     {filterType === 'DAY' && 'Ngày'}
@@ -194,17 +195,17 @@ const Statistic = () => {
                                 </div>
                             </div>
                         </th>
-                        <th>Số lượng sách bán</th>
-                        <th>Doanh thu (VND)</th>
+                        <th className='text-center'>Số lượng sách bán</th>
+                        <th className='text-center'>Doanh thu (VND)</th>
                     </tr>
                 </thead>
                 {statistics?.length > 0 ? (
                     <tbody>
                         {statistics.map((stat, index) => (
                             <tr key={index}>
-                                <td>{stat.date}</td>
-                                <td>{stat.numberOfBooksSold}</td>
-                                <td>{stat.revenue}</td>
+                                <td >{stat.date}</td>
+                                <td >{stat.numberOfBooksSold}</td>
+                                <td >{stat.revenue}</td>
                             </tr>
                         ))}
                     </tbody>

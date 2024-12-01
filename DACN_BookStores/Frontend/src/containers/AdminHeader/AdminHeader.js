@@ -6,7 +6,7 @@ import logo from '~/assets/imgs/logo-nhasachtritue-2.png';
 
 const AdminHeader = () => {
     return (
-        <div className={clsx(styles['header'])}>
+        <div className={clsx("d-flex flex-wrap" ,styles['header'])}>
             <Link to="/">
                 <img height={70} src={logo} alt="logo-nhasachtritue" />
             </Link>
