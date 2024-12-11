@@ -1,12 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faBagShopping,
-    faCartShopping,
-    faMagnifyingGlass,
-    faReceipt,
-    faTicket,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBagShopping, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import styles from './Header.module.scss';
 import logo from '~/assets/imgs/logo-nhasachtritue-2.png';
@@ -17,11 +11,9 @@ import { searchBookByNameOrAuthor } from '~/services/bookService';
 import { formatPrice } from '~/utils/commonUtils';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
 import { Notice } from '~/components/Notice';
-import { useDispatch, useSelector } from 'react-redux';
 import { CartContext } from '~/hooks/CartContext';
 
 const Header = () => {
-    const dispatch = useDispatch();
     const location = useLocation();
     const { cart, fetchUserCart } = useContext(CartContext);
     const queryParams = new URLSearchParams(location.search);

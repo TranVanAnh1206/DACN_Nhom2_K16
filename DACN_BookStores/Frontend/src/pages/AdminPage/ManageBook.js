@@ -12,7 +12,8 @@ import moment from 'moment';
 import customToastify from '~/utils/customToastify';
 import axios from 'axios';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
-
+import { formatPrice } from '~/utils/commonUtils';
+import StarRateIcon from '@mui/icons-material/StarRate';
 const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging, setSpinning }) => {
     const [genres, setGenres] = useState([]);
     useEffect(() => {
@@ -343,6 +344,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
 };
 
 const ManageBook = ({ setSpinning }) => {
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
 
     const [bookList, setBookList] = useState([]);
@@ -447,9 +449,9 @@ const ManageBook = ({ setSpinning }) => {
     };
 
     return (
-        <>
-            <div className="d-flex align-items-center justify-content-between">
-                <div style={{ width: '30%' }}>
+        <div id="manage-books">
+            <div className="d-flex align-items-center justify-content-between flex-wrap mb-2 gap-2">
+                <div>
                     <input
                         className="fz-16 form-control"
                         placeholder="Tìm kiếm theo tên sách"
@@ -457,68 +459,85 @@ const ManageBook = ({ setSpinning }) => {
                         onKeyDown={handleSearch}
                     />
                 </div>
-                <button className="btn btn-primary fz-16 mb-3" onClick={handleShowModalAddBook}>
+                <button className="btn btn-primary fz-16" onClick={handleShowModalAddBook}>
                     Thêm sách
                 </button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Genres</th>
-                        <th>Price</th>
-                        <th>Description</th>
-                        <th>Publication Date</th>
-                        <th>Total Page Number</th>
-                        <th>Rated</th>
-                        <th>Authors</th>
-                        <th>Image</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {bookList?.map((book) => {
-                        return (
-                            <tr key={`book-${book?.id}`}>
-                                <td>{book?.name}</td>
-                                <td>{book?.genresName}</td>
-                                <td>{book?.price}</td>
-                                <td>{book?.description}</td>
-                                <td>{moment(book?.publicationDate).format('DD/MM/YYYY')}</td>
-                                <td>{book?.totalPageNumber}</td>
-                                <td>{book?.rated}</td>
-                                <td>{book?.authors?.map((author) => author?.fullName).join(', ')}</td>
-                                <td>
-                                    <img
-                                        src={book?.image || bookImageDefault}
-                                        alt="The Great Gatsby"
-                                        onError={(e) => {
-                                            e.target.onerror = null;
-                                            e.target.src = bookImageDefault;
-                                        }}
-                                    />
-                                </td>
-                                <td>
-                                    <Button
-                                        className="fz-16 me-3"
-                                        variant="warning"
-                                        onClick={() => handleShowModalUpdateBook(book?.id)}
-                                    >
-                                        Sửa
-                                    </Button>
-                                    <Button
-                                        className="fz-16 mt-3"
-                                        variant="danger"
-                                        onClick={() => handleShowModalDeleteBook(book?.id, book?.name)}
-                                    >
-                                        Xoá
-                                    </Button>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+            <div className="table-responsive">
+                <table className="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th className="text-center text-nowrap">Thông tin sách</th>
+                            <th className="text-center text-nowrap">Mô tả</th>
+                            <th className="text-center text-nowrap">Ngày xuất bản</th>
+                            <th className="text-center text-nowrap">Tác giả</th>
+                            <th className="text-center text-nowrap"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bookList?.map((book) => {
+                            return (
+                                <tr key={`book-${book?.id}`}>
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <div className="img-item text-center">
+                                                <img
+                                                    src={book?.image || bookImageDefault}
+                                                    alt="The Great Gatsby"
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = bookImageDefault;
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="info">
+                                                <div className="name fw-bold text-nowrap mx-auto">{book?.name}</div>
+                                                <div className="text-secondary">{book?.genresName}</div>
+                                                <div className="price text-danger fw-bold">
+                                                    {formatPrice(book?.price, 'VND')}{' '}
+                                                </div>
+                                                <div>
+                                                    {book?.rated} <StarRateIcon className="text-warning" />
+                                                </div>
+                                                <div>
+                                                    Tổng số trang:{' '}
+                                                    <span className="fw-bold">{book?.totalPageNumber}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div className="desc">{book?.description}</div>
+                                    </td>
+                                    <td className="text-center">
+                                        {moment(book?.publicationDate).format('DD/MM/YYYY')}
+                                    </td>
+
+                                    <td className="text-center">
+                                        {book?.authors?.map((author) => author?.fullName).join(', ')}
+                                    </td>
+                                    <td className="text-center text-nowrap">
+                                        <Button
+                                            className="fz-16 me-3"
+                                            variant="warning"
+                                            onClick={() => handleShowModalUpdateBook(book?.id)}
+                                        >
+                                            Sửa
+                                        </Button>
+                                        <Button
+                                            className="fz-16 "
+                                            variant="danger"
+                                            onClick={() => handleShowModalDeleteBook(book?.id, book?.name)}
+                                        >
+                                            Xoá
+                                        </Button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
             <Pagination className="d-flex justify-content-center">
                 {Array.from({ length: totalPage }, (_, i) => (i = i + 1))?.map((i) => {
                     return (
@@ -566,7 +585,7 @@ const ManageBook = ({ setSpinning }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     );
 };
 

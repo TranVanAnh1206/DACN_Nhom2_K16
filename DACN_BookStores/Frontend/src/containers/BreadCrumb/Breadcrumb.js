@@ -12,7 +12,7 @@ const Breadcrumb = ({ title, category, item }) => {
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">
-                                <Link to="/">Home</Link>
+                                <Link to="/">Trang chủ</Link>
                             </li>
                             {category ? <li className="breadcrumb-item">{category}</li> : <></>}
                             <li className="breadcrumb-item active" aria-current="page">

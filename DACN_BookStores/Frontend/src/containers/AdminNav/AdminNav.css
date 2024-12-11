@@ -1,0 +1,79 @@
+#nav-account {
+  background-color: #fff;
+}
+
+#nav-account .title {
+  color: #5497fe;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#nav-account .nav-item-account {
+  color: #000;
+}
+
+#nav-account .navbar-toggler.collapsed {
+  display: none !important;
+}
+
+.offcanvas-body .nav-item-account,
+.offcanvas-body .delete-acc {
+  position: relative;
+  color: #555;
+  cursor: pointer;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #fff;
+  transition: all .3s ease;
+  width: 70%;
+  padding: 4px;
+}
+
+/* .side-bar-bottom .side-bar-item i,
+.side-bar-bottom .delete-acc i {
+  min-width: 20px;
+  transition: all .3s ease;
+} */
+
+.offcanvas-body .nav-item-account::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: #5497fe;
+  top: 100%;
+  transform: scale(0);
+  transition: all .4s ease;
+}
+
+.offcanvas-body .nav-item-account:hover::before,
+.offcanvas-body .nav-item-account.active::before {
+  transform: scale(1);
+}
+
+.offcanvas-body .nav-item-account:hover,
+.offcanvas-body .nav-item-account.active {
+  color: #5497fe;
+}
+
+.offcanvas-body .delete-acc::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  top: 100%;
+  background-color: #dc3545;
+  transform: scale(0);
+  transition: all .4s ease;
+}
+
+.offcanvas-body .delete-acc:hover::before {
+  transform: scale(1);
+}
+
+
+@media (width <=992px) {
+  #nav-account .navbar-toggler.collapsed {
+    display: block !important;
+  }
+}

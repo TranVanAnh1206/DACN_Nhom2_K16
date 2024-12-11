@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import styles from './VouchersManager.module.scss';
 import { CreateVoucherService, DeleteVoucherService, getMyVoucherService } from '~/services/voucherService';
 import Table from 'react-bootstrap/Table';
 import { formatCurrency, formatDateTime, formatPrice } from '~/utils/commonUtils';
@@ -8,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFloppyDisk, faPenAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { Form } from 'react-router-dom';
 import { TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import customToastify from '~/utils/customToastify';
@@ -126,8 +124,6 @@ const VouchersManager = () => {
     return (
         <div>
             <div className="d-flex justify-content-between align-content-center mb-3">
-                <p>Trang quản trị voucher</p>
-
                 <div>
                     <Button variant="primary" onClick={handleShow}>
                         Thêm mới

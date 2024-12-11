@@ -3,10 +3,14 @@ import { useEffect, useState } from 'react';
 import { Button, Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
 import styles from './AdminPage.module.scss';
 import { adminChangeStatusOfOrderService, adminGetAllOrdersService } from '~/services/orderService';
-import bookImageDefault from '~/assets/imgs/book-default.jpg';
+import { faPenAlt } from '@fortawesome/free-solid-svg-icons';
+
 import moment from 'moment';
+import { formatCurrency } from '~/utils/commonUtils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ManageOrder = ({ setSpinning }) => {
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
 
     const [orders, setOrders] = useState([]);
@@ -90,18 +94,17 @@ const ManageOrder = ({ setSpinning }) => {
     };
 
     return (
-        <>
-            <div className="w-100 d-flex justify-content-center">
-                <table className="w-100">
+        <div id="manage-orders">
+            <div className="table-responsive  d-flex justify-content-center">
+                <table className="w-100 table table-bordered">
                     <thead>
                         <tr>
-                            <th>Email</th>
-                            <th>Address</th>
-                            <th>Total Amount</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Books</th>
-                            <th>Action</th>
+                            <th className="text-center">Email</th>
+                            <th className="text-center">Địa chỉ</th>
+                            <th className="text-center text-nowrap">Tổng tiền</th>
+                            <th className="text-center">Ngày</th>
+                            <th className="text-center">Trạng thái</th>
+                            <th className="text-center"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,34 +120,16 @@ const ManageOrder = ({ setSpinning }) => {
                                 <tr key={`order-${order?.id}`}>
                                     <td>{order?.userEmail}</td>
                                     <td>{order?.userAddress}</td>
-                                    <td>{order?.totalAmount}</td>
-                                    <td>{moment(order?.date).format('DD/MM/YYYY')}</td>
-                                    <td>{obj[order?.status]}</td>
-                                    <td>
-                                        <div className="d-flex flex-column align-items-center flex-wrap">
-                                            {order?.orderItems?.map((book) => {
-                                                return (
-                                                    <img
-                                                        className={clsx(styles['book-image'])}
-                                                        key={`book-${book?.bookId}`}
-                                                        src={book?.bookImage}
-                                                        alt={book?.bookName}
-                                                        onError={(e) => {
-                                                            e.target.onerror = null;
-                                                            e.target.src = bookImageDefault;
-                                                        }}
-                                                    />
-                                                );
-                                            })}
-                                        </div>
-                                    </td>
-                                    <td>
+                                    <td className="text-center">{formatCurrency(order?.totalAmount, 'VND')}</td>
+                                    <td className="text-center">{moment(order?.date).format('DD/MM/YYYY')}</td>
+                                    <td className="text-center">{obj[order?.status]}</td>
+                                    <td className="">
                                         <Button
-                                            className="fz-16 me-3"
+                                            className="fz-16"
                                             variant="warning"
                                             onClick={() => handleShowModalUpdateOrder(order?.id, order?.status)}
                                         >
-                                            Sửa trạng thái
+                                            <FontAwesomeIcon icon={faPenAlt} className="text-white" />
                                         </Button>
                                         {/* <Button
                                                 className="fz-16"
@@ -214,7 +199,7 @@ const ManageOrder = ({ setSpinning }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     );
 };
 

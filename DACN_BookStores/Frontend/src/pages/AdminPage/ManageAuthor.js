@@ -10,6 +10,7 @@ import {
 import styles from './AdminPage.module.scss';
 
 const ManageAuthor = ({ setSpinning }) => {
+    // eslint-disable-next-line no-unused-vars
     const [loading, setLoading] = useState(false);
 
     const [authors, setAuthors] = useState([]);
@@ -122,18 +123,18 @@ const ManageAuthor = ({ setSpinning }) => {
     };
 
     return (
-        <>
-            <div>
-                <button className="btn btn-primary fz-16 mb-3 float-end" onClick={handleShowModalAddAuthor}>
+        <div id="manage-authors">
+            <div className='text-end'>
+                <button className="btn btn-primary fz-16 mb-3" onClick={handleShowModalAddAuthor}>
                     Thêm tác giả
                 </button>
             </div>
-            <div className="w-100 d-flex justify-content-center">
-                <table className="w-100">
+            <div className="table-responsive d-flex justify-content-center">
+                <table className="table w-100 table-bordered">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Action</th>
+                            <th className='text-center'>Tên tác giả</th>
+                            <th className='text-center'></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -141,7 +142,7 @@ const ManageAuthor = ({ setSpinning }) => {
                             return (
                                 <tr key={`author-${author?.id}`}>
                                     <td>{author?.name}</td>
-                                    <td>
+                                    <td className='text-center'>
                                         <Button
                                             className="fz-16 me-3"
                                             variant="warning"
@@ -257,7 +258,7 @@ const ManageAuthor = ({ setSpinning }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     );
 };
 

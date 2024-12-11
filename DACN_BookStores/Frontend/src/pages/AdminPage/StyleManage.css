@@ -1,0 +1,135 @@
+/*! manage*/
+#manage-users .search-user-input input {
+  min-width: 250px;
+}
+
+#manage-users table,
+#manage-books table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+#manage-users table th,
+#manage-books table th {
+  font-size: 16px;
+}
+
+#manage-users table th:nth-child(3) {
+  min-width: 180px;
+}
+
+#manage-orders table th:nth-child(2) {
+  min-width: 100px;
+}
+
+#manage-users table td,
+#manage-books table td,
+#manage-authors table td,
+#manage-genres table td,
+#manage-orders table td {
+  font-size: 14px;
+}
+
+#manage-books table .img-item img {
+  width: 80px;
+  height: auto;
+  border-radius: 0.4rem;
+}
+
+#manage-books table .desc {
+  width: 100px;
+  height: auto;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  /* Số dòng giới hạn */
+}
+
+@media (max-width: 768px) {
+
+  #manage-users table,
+  #manage-books table,
+  #manage-authors table,
+  #manage-genres table,
+  #manage-orders table {
+    font-size: 12px;
+    /* Giảm kích thước chữ trên màn hình nhỏ */
+  }
+}
+
+/*! end manage */
+
+
+
+/* .header-wrapper td img {} */
+
+.sign-up-wrapper {
+  border-top: 0.1rem solid #ddd;
+  margin-top: 2rem;
+  padding-top: 2rem;
+}
+
+.sign-up-wrapper .sign-up-btn {
+  font-size: 1.6rem;
+  background-color: #44b52e;
+  border-color: #44b52e;
+}
+
+.sign-up-wrapper .sign-up-btn:hover,
+.sign-up-wrapper .sign-up-btn:active {
+  background-color: #3c9b29;
+}
+
+.modal-sign-up-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+}
+
+.invalid-feedback {
+  font-size: 1.6rem;
+  color: #dc3545;
+  margin-top: 0.25rem;
+  white-space: nowrap;
+}
+
+.show-hide-password {
+  position: absolute;
+  right: 3rem;
+  top: 1.6rem;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+}
+
+.invalid {
+  border-color: var(--bs-form-invalid-border-color) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e") !important;
+}
+
+.book-image {
+  max-width: 5rem;
+  max-height: 5rem;
+}
+
+.book-image+.book-image {
+  margin-top: 0.8rem;
+}
+
+.sort-type-active {
+  color: blue;
+}
+
+.overlay-loading {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}

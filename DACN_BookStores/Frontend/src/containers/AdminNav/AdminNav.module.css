@@ -1,0 +1,17 @@
+#nav-account .title,
+#nav-account .title i {
+    color: var(--main-color) !important;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#nav-account .navbar-toggler.collapsed {
+    display: none !important;
+}
+
+@media (width <=992px) {
+    #nav-account .navbar-toggler.collapsed {
+        display: block !important;
+    }
+}

@@ -9,8 +9,6 @@ import { getBookPagingService } from '~/services/bookService';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '~/redux/slices/loadingSlide';
 import Group from '~/components/Group';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import { connect } from 'formik';
 import { getAllGenresService } from '~/services/genreService';
 import { Col, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';

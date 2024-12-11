@@ -124,18 +124,18 @@ const ManageGenre = ({ setSpinning }) => {
     };
 
     return (
-        <>
-            <div>
-                <button className="btn btn-primary fz-16 mb-3 float-end" onClick={handleShowModalAddGenre}>
+        <div id="manage-genres">
+            <div className="text-end mb-3">
+                <button className="btn btn-primary fz-16" onClick={handleShowModalAddGenre}>
                     Thêm thể loại
                 </button>
             </div>
-            <div className="w-100 d-flex justify-content-center">
-                <table className="w-100">
+            <div className="table-responsive d-flex justify-content-center">
+                <table className="w-100 table table-bordered">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Action</th>
+                            <th className='text-center'>Tên thể loại</th>
+                            <th className='text-center'></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -143,7 +143,7 @@ const ManageGenre = ({ setSpinning }) => {
                             return (
                                 <tr key={`genre-${genre?.id}`}>
                                     <td>{genre?.name}</td>
-                                    <td>
+                                    <td className='text-center'>
                                         <Button
                                             className="fz-16 me-3"
                                             variant="warning"
@@ -259,7 +259,7 @@ const ManageGenre = ({ setSpinning }) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     );
 };
 
