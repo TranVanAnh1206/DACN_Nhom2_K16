@@ -14,7 +14,7 @@ const initialState = {
 };
 
 const userSlice = createSlice({
-    name: 'user/get_infor',
+    name: 'user',
     initialState,
     reducers: {
         // Action để lưu thông tin người dùng

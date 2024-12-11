@@ -55,9 +55,9 @@ const AccountAvatar = () => {
                                 )}
                                 <li key={index}>
                                     {menu.path ? (
-                                        <NavLink className="dropdown-item" to={menu.path}>
+                                        <Link className="dropdown-item" to={menu.path}>
                                             {menu.component ? <menu.component /> : <>{menu.title}</>}
-                                        </NavLink>
+                                        </Link>
                                     ) : (
                                         <a className="dropdown-item">
                                             {menu.component ? <menu.component /> : <>{menu.title}</>}

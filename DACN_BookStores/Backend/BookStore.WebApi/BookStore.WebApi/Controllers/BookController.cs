@@ -24,11 +24,16 @@ namespace BookStore.WebApi.Controllers
         [HttpGet]
         [Route("book-related")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetBookRelated([FromQuery] List<int> authorId, [FromQuery] int groupId)
+        public async Task<IActionResult> GetBookRelated([FromQuery] List<int> authorId, [FromQuery] int groupId, [FromQuery] PaginationParams pageParams)
         {
             try
             {
-                var res = await _bookService.GetBookRelated(authorId, groupId);
+                if (pageParams.PageNumber <= 0)
+                {
+                    pageParams.PageNumber = 1;
+                }
+
+                var res = await _bookService.GetBookRelated(authorId, groupId, pageParams);
 
                 return Ok(res);
             }

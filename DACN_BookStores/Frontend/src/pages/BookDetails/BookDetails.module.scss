@@ -61,6 +61,18 @@
         margin-top: 1rem;
         margin-bottom: 15px;
 
+        .btn-quantity-sub {
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+            border-right: none;
+        }
+
+        .btn-quantity-add {
+            border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+            border-left: none;
+        }
+
         .book-quantity-btn {
             width: 36px;
             height: 36px;
@@ -69,7 +81,7 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            background-color: #dfdddd;
+            background-color: #fff;
 
             &:disabled {
                 background-color: #f9f9f9;
@@ -101,6 +113,7 @@
             margin-right: 20px;
             color: black;
             border: 1px solid #ec8000;
+            border-radius: 8px;
 
             &:hover {
                 background-color: #ec8000;
@@ -109,7 +122,8 @@
         }
 
         &.btn-buy-now {
-            background-color: #454545;
+            background-color: #c92127;
+            border-radius: 8px;
 
             &:hover {
                 background-color: #272020;

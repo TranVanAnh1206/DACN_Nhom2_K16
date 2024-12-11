@@ -124,14 +124,58 @@ input[type='password']::-webkit-search-cancel-button {
     .slick-prev,
     .slick-next {
         z-index: 9;
+        width: 50px;
+        height: 40px;
+        text-align: center;
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
     }
 
     .slick-prev {
         left: 15px;
     }
 
+    .slick-prev::before {
+        content: '\003c';
+        font-weight: bold;
+        transition: all 0.3s ease;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .slick-prev:hover::before {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+        background-color: lightgray;
+        border-radius: 50%;
+    }
+
     .slick-next {
         right: 15px;
+    }
+
+    .slick-next::before {
+        content: '\003e';
+        font-weight: bold;
+        transition: all 0.3s ease;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .slick-next:hover::before {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+        background-color: lightgray;
+        border-radius: 50%;
     }
 
     .slick-prev:before,

@@ -40,12 +40,17 @@ const Notice = ({ title, icon, cart }) => {
                                                     <img src={item.bookImage}></img>
                                                 </div>
 
-                                                <div>
-                                                    <div style={{ textWrap: 'wrap' }}>{item.bookName}</div>
+                                                <div style={{ width: '100%' }}>
+                                                    <div
+                                                        className={clsx(styles['name-wrap'])}
+                                                        style={{ textWrap: 'wrap' }}
+                                                    >
+                                                        {item.bookName}
+                                                    </div>
                                                     <p className={clsx(styles['notice-price'])}>
-                                                        {formatPrice(item.bookPrice, 'VND')}
+                                                        <p className="me-3">{formatPrice(item.bookPrice, 'VND')}</p>
+                                                        <p style={{ color: '#333' }}>x {item.quantity}</p>
                                                     </p>
-                                                    <p>x {item.quantity}</p>
                                                 </div>
                                             </Link>
                                         </div>

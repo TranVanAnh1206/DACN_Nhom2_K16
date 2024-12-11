@@ -19,6 +19,7 @@ import { ClassicEditor, Bold, Essentials, Italic, Mention, Paragraph, Undo } fro
 
 import 'ckeditor5/ckeditor5.css';
 import { getMomoLinkPaymentService, getVnpayLinkPaymentService } from '~/services/PaymentService';
+import customToastify from '~/utils/customToastify';
 
 const Order = () => {
     const dispatch = useDispatch();
@@ -69,6 +70,7 @@ const Order = () => {
     };
 
     const handleReview = async () => {
+        dispatch(setLoading(true));
         try {
             currentBookReview?.book?.forEach(async (item, index) => {
                 await submitReviewService({
@@ -83,11 +85,15 @@ const Order = () => {
 
             fetchOrder();
 
+            customToastify.success('Đánh giá đơn hàng thành công!');
+
             console.log(currentBookReview, reviewRate, reviewContent);
         } catch (error) {
+            customToastify.error('Đánh giá đơn hàng thất bại!');
             console.log(error);
         } finally {
             handleCloseModalReview();
+            dispatch(setLoading(false));
         }
     };
 
@@ -212,6 +218,7 @@ const Order = () => {
                                             Ngày mua: {formatDateTime(order?.date)}
                                         </div>
                                         <div className="mt-2">
+                                            Phương thức thanh toán:{' '}
                                             {order?.paymentMethod === 'COD'
                                                 ? 'Thanh toán khi nhận hàng'
                                                 : order?.paymentMethod === 'MOMO'
@@ -221,19 +228,27 @@ const Order = () => {
                                     </div>
 
                                     <div className="d-flex flex-column align-items-end">
-                                        {order?.voucherId !== 0 ? (
-                                            <div className="fz-16">
-                                                Giảm giá:{' '}
-                                                {formatPrice((order.totalAmount * order.voucherPercent) / 100, 'VND')}
-                                                <span className="ms-4">({order?.voucherPercent}%)</span>
-                                            </div>
-                                        ) : (
-                                            <></>
-                                        )}
-
-                                        <div className={clsx(styles['order-total-amount'])}>
-                                            Thành tiền: {formatPrice(order?.totalAmount, 'VND')}
-                                        </div>
+                                        <table width={300} border={0}>
+                                            <tr style={{ textAlign: 'right', marginBottom: '16px' }}>
+                                                <td>Tổng tiền: </td>
+                                                <td>{formatPrice(order.voucherDiscount + order.totalAmount, 'VND')}</td>
+                                            </tr>
+                                            {order?.voucherId !== 0 ? (
+                                                <tr style={{ textAlign: 'right' }}>
+                                                    <td>Giảm giá:</td>
+                                                    <td>-{formatPrice(order.voucherDiscount, 'VND')}</td>
+                                                </tr>
+                                            ) : (
+                                                <></>
+                                            )}
+                                            <tr
+                                                className={clsx(styles['order-total-amount'])}
+                                                style={{ textAlign: 'right' }}
+                                            >
+                                                <td>Thành tiền:</td>
+                                                <td>{formatPrice(order?.totalAmount, 'VND')}</td>
+                                            </tr>
+                                        </table>
 
                                         {order?.status === 3 && (
                                             <div className={clsx(styles['order-action'])}>

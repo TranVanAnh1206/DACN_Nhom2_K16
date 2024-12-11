@@ -30,6 +30,7 @@
             }
 
             .item-img-wrap {
+                min-width: 50px;
                 width: 50px;
 
                 img {
@@ -37,12 +38,25 @@
                 }
             }
 
+            .name-wrap {
+                font-size: 14px;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
             .item-img-wrap {
                 margin-right: 20px;
             }
 
             .notice-price {
+                width: 100%;
                 color: $main-price-color;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
         }
     }

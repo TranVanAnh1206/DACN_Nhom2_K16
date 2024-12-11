@@ -38,6 +38,8 @@ namespace BookStore.Datas.Repositories
         {
             var cart = await _dbContext.Carts.SingleOrDefaultAsync(x => x.UserId == userId);
 
+            var cartId = cart.Id;
+
             cart = new Cart
             {
                 CartItems = [],
@@ -48,9 +50,11 @@ namespace BookStore.Datas.Repositories
             {
                 await _dbContext.Carts.AddAsync(cart);
                 await _dbContext.SaveChangesAsync();
+
+                cartId = cart.Id;
             }
 
-            return cart.Id;
+            return cartId;
         }
 
         public async Task<int> UpdateQuantity(int id, int quantity)

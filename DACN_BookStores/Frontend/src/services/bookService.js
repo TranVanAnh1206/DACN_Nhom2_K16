@@ -17,12 +17,12 @@ export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy, ge
     });
 };
 
-export const getBookRelatedService = ({ authorId = [], groupId }) => {
+export const getBookRelatedService = ({ authorId = [], groupId, page = 1, pageSize = 10 }) => {
     var authorIdStr = authorId.reduce((prev, id, index) => {
         return `${prev}authorId=${id}`;
     });
 
-    return axios.get(`Books/book-related?${authorIdStr}`, {
+    return axios.get(`Books/book-related?${authorIdStr}&PageNumber=${page}&PageSize=${pageSize}`, {
         params: {
             groupId,
         },

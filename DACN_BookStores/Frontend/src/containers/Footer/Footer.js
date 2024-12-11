@@ -71,6 +71,32 @@ const Footer = () => {
                             </Link>
                         </div>
                     </div>
+
+                    <div
+                        className="hidden-xs"
+                        style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(3, 1fr)',
+                            gridGap: '25px',
+                            height: '80px',
+                            marginRight: '16px',
+                            marginTop: '20px',
+                        }}
+                    >
+                        <div className="footer-image-container">
+                            <img
+                                style={{ maxWidth: '120px' }}
+                                src="https://cdn0.fahasa.com/media//wysiwyg/Logo-NCC/vnpay_logo.png"
+                            />
+                        </div>
+
+                        <div className="footer-image-container">
+                            <img
+                                style={{ height: '50px' }}
+                                src="https://cdn0.fahasa.com/media//wysiwyg/Logo-NCC/momopay.png"
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className={clsx(styles[('support-info', 'introduce-info')])}>
                     <h4 className={clsx(styles['title'])}>Hỗ trợ khác hàng</h4>

@@ -21,8 +21,11 @@ namespace BookStore.Bussiness.ViewModel.Book
         public double Rate { get; set; } = 0.0;
 
         public int BookGroupId { get; set; }
+
         public string BookGroupName { get; set; }
         // public BookGroupViewModel BookGroup { get; set; }
+
+        public int Remaining { get; set; }
 
         //public int PublisherId { get; set; }
         //public string PublisherName { get; set; }

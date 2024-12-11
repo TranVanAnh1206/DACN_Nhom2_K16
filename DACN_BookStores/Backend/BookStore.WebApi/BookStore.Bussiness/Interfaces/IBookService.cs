@@ -9,6 +9,6 @@ namespace BookStore.Bussiness.Interfaces
     {
         Task<PaginationSet<BookViewModel>> Search(BookSpecification spec, PaginationParams pageParams, string[] includes = null);
 
-        Task<IEnumerable<BookViewModel>> GetBookRelated(List<int>? authorId, int groupId);
+        Task<PaginationSet<BookViewModel>> GetBookRelated(List<int>? authorId, int groupId, PaginationParams pageParams);
     }
 }

@@ -10,7 +10,7 @@ const DefaultLayout = ({ children }) => {
     return (
         <div style={mainSection}>
             <Header />
-            <Navigate />
+            {/* <Navigate /> */}
             {children}
             <Footer />
         </div>

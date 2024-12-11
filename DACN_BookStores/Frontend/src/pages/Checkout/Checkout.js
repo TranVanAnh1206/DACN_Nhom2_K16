@@ -15,6 +15,7 @@ import customToastify from '~/utils/customToastify';
 import { setLoading } from '~/redux/slices/loadingSlide';
 import { getMomoLinkPaymentService, getVnpayLinkPaymentService } from '~/services/PaymentService';
 import { HubConnectionBuilder } from '@microsoft/signalr';
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 const Checkout = () => {
     const dispatch = useDispatch();
@@ -96,7 +97,7 @@ const Checkout = () => {
                 userId: user?.id,
                 date: new Date().toISOString(),
                 paymentMethod: paymentMethod,
-                voucherId: voucher ? voucher?.voucherId : 0,
+                voucherId: voucher ? voucher?.id : 0,
                 status: orderStatus,
                 orderItems: checkedBooks.map((b) => ({ bookId: b?.id, quantity: b?.quantity })),
             });
@@ -297,45 +298,51 @@ const Checkout = () => {
                     </div>
 
                     <div>
-                        <div className="form-check">
-                            <input
-                                onChange={() => setPaymentMethod('COD')}
-                                checked
-                                className="form-check-input"
-                                type="radio"
-                                name="payment_method"
-                                id="cod"
-                            />
-                            <label className="form-check-label" htmlFor="cod">
-                                Thanh toán khi nhận hàng
-                            </label>
-                        </div>
-
-                        <div className="form-check mt-2">
-                            <input
-                                onChange={() => setPaymentMethod('MOMO')}
-                                className="form-check-input"
-                                type="radio"
-                                name="payment_method"
-                                id="momo_pay"
-                            />
-                            <label className="form-check-label" htmlFor="momo_pay">
-                                Thanh toán bằng MOMO
-                            </label>
-                        </div>
-
-                        <div className="form-check mt-2">
-                            <input
-                                onChange={() => setPaymentMethod('VNPAY')}
-                                className="form-check-input"
-                                type="radio"
-                                name="payment_method"
-                                id="vnpay_pay"
-                            />
-                            <label className="form-check-label" htmlFor="vnpay_pay">
-                                Thanh toán bằng VNPAY
-                            </label>
-                        </div>
+                        <FormControl>
+                            <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
+                            <RadioGroup
+                                aria-labelledby="demo-radio-buttons-group-label"
+                                defaultValue="female"
+                                name="radio-buttons-group"
+                            >
+                                <FormControlLabel
+                                    value="female"
+                                    control={<Radio />}
+                                    label="Thanh toán khi nhận hàng"
+                                    onChange={() => setPaymentMethod('COD')}
+                                />
+                                <FormControlLabel
+                                    value="male"
+                                    control={<Radio />}
+                                    label={
+                                        <>
+                                            <img
+                                                width={40}
+                                                style={{ marginRight: '16px' }}
+                                                src="https://cdn0.fahasa.com/media//wysiwyg/Logo-NCC/momopay.png"
+                                            />
+                                            Thanh toán bằng MOMO
+                                        </>
+                                    }
+                                    onChange={() => setPaymentMethod('MOMO')}
+                                />
+                                <FormControlLabel
+                                    value="other"
+                                    control={<Radio />}
+                                    label={
+                                        <>
+                                            <img
+                                                width={60}
+                                                style={{ marginRight: '16px' }}
+                                                src="https://cdn0.fahasa.com/media//wysiwyg/Logo-NCC/vnpay_logo.png"
+                                            />
+                                            Thanh toán bằng VNPAY
+                                        </>
+                                    }
+                                    onChange={() => setPaymentMethod('VNPAY')}
+                                />
+                            </RadioGroup>
+                        </FormControl>
                     </div>
                 </div>
 

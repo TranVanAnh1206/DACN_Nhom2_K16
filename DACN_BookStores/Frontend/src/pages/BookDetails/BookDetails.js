@@ -47,6 +47,7 @@ const BookDetails = () => {
         bookGroupId: '',
         bookGroupName: '',
         publishedAt: '',
+        remaining: 0,
         authors: [],
         reviews: [],
         numberOfReview: 0,
@@ -71,6 +72,7 @@ const BookDetails = () => {
                     bookGroupId: res.data?.bookGroupId,
                     bookGroupName: res.data?.bookGroupName,
                     publishedAt: res.data?.publishedAt,
+                    remaining: res.data?.remaining,
                     authors: res.data?.author?.map((a) => a?.fullName).join(', '),
                     reviews: res.data?.reviews,
                     numberOfReview: res?.data?.totalReviewNumber,
@@ -86,10 +88,17 @@ const BookDetails = () => {
 
     const fetchGetRelatedBook = async (authorId = [], groupId) => {
         try {
-            var relatedBookResult = await getBookRelatedService({ authorId: authorId, groupId: groupId });
+            var relatedBookResult = await getBookRelatedService({
+                authorId: authorId,
+                groupId: groupId,
+                page: 1,
+                pageSize: 6,
+            });
+
+            console.log(relatedBookResult);
 
             if (relatedBookResult && relatedBookResult.data) {
-                var rs = relatedBookResult.data.map((book) => {
+                var rs = relatedBookResult.data.datas.map((book) => {
                     return {
                         id: book.id,
                         title: book.title,
@@ -101,6 +110,7 @@ const BookDetails = () => {
                         bookGroupId: book.bookGroupId,
                         bookGroupName: book.bookGroupName,
                         publishedAt: book.publishedAt,
+                        remaining: book.remaining,
                         authors: book.author?.map((a) => a?.fullName).join(', '),
                         reviews: book.reviews,
                         numberOfReview: book?.totalReviewNumber,
@@ -128,8 +138,13 @@ const BookDetails = () => {
     }, [relatedBookParamsAuthorId, bookInfo.bookGroupId]);
 
     const handleSetQuantity = (e) => {
-        if (!isNaN(e.target.value) && e.target.value > 0 && e.target.value <= 50) {
-            setQuantity(e.target.value);
+        var value = e.target.value;
+
+        if (!isNaN(value) && value > 0 && value < bookInfo.remaining) {
+            setQuantity(value);
+        } else if (value >= bookInfo.remaining) {
+            setQuantity(bookInfo.remaining);
+            customToastify.error('Số lượng phải bé hơn số lượng hàng trong kho!');
         }
     };
 
@@ -260,22 +275,28 @@ const BookDetails = () => {
                             </div>
 
                             <div>
-                                <div className={clsx(styles['book-genres'])}>Thể loại: {bookInfo?.bookGroupName}</div>
-                                <div className={clsx(styles['book-authors'])}>Tác giả: {bookInfo?.authors}</div>
-                                <div className={clsx(styles['book-other-info'])}>
-                                    <div>Tổng số trang: {bookInfo?.totalPageNumber}</div>
+                                <div className={clsx(styles['book-genres'])}>
+                                    Thể loại: <b>{bookInfo?.bookGroupName}</b>
+                                </div>
+                                <div className={clsx(styles['book-authors'])}>
+                                    Tác giả: <b>{bookInfo?.authors}</b>
                                 </div>
                                 <div className={clsx(styles['book-other-info'])}>
-                                    <div>Ngày xuất bản: {moment(bookInfo?.publishedAt).format('DD/MM/YYYY')}</div>
+                                    <div>
+                                        Tổng số trang: <b>{bookInfo?.totalPageNumber}</b>
+                                    </div>
+                                </div>
+                                <div className={clsx(styles['book-other-info'])}>
+                                    <div>
+                                        Ngày xuất bản: <b>{moment(bookInfo?.publishedAt).format('DD/MM/YYYY')}</b>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className={clsx(styles['book-price'])}>
-                                {formatPrice(bookInfo?.price * quantity, 'VND')}
-                            </div>
+                            <div className={clsx(styles['book-price'])}>{formatPrice(bookInfo?.price, 'VND')}</div>
                             <div className={clsx(styles['book-quantity'])}>
                                 <button
-                                    className={clsx(styles['book-quantity-btn'])}
+                                    className={clsx(styles['book-quantity-btn'], styles['btn-quantity-sub'])}
                                     disabled={quantity <= 1}
                                     onClick={() => setQuantity((prev) => Number(prev) - 1)}
                                 >
@@ -287,15 +308,18 @@ const BookDetails = () => {
                                     className={clsx(styles['book-quantity-input'])}
                                     type="number"
                                     min={1}
-                                    max={50}
+                                    max={bookInfo.remaining}
                                 />
                                 <button
-                                    disabled={quantity >= 50}
-                                    className={clsx(styles['book-quantity-btn'])}
+                                    disabled={quantity >= bookInfo.remaining}
+                                    className={clsx(styles['book-quantity-btn'], styles['btn-quantity-add'])}
                                     onClick={() => setQuantity((prev) => Number(prev) + 1)}
                                 >
                                     <FontAwesomeIcon icon={faPlus} />
                                 </button>
+                            </div>
+                            <div className="mb-3">
+                                <p>Kho: Còn {bookInfo.remaining} quyển sách</p>
                             </div>
                             <div>
                                 <button
@@ -359,7 +383,10 @@ const BookDetails = () => {
                                                 <div className={clsx(styles['commentator-name'])}>
                                                     {usernameDisplay}
                                                 </div>
-                                                <div className={clsx(styles['comment-content'])}>{review?.content}</div>
+                                                <div
+                                                    className={clsx(styles['comment-content'])}
+                                                    dangerouslySetInnerHTML={{ __html: review?.content }}
+                                                ></div>
                                             </div>
                                         </div>
                                     </div>
