@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Form, Table, Row, Col } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 import { getStatistic } from '~/services/statisticService';
@@ -8,6 +7,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import styles from './AdminPage.module.scss';
+import dayjs from 'dayjs';
+import {
+    FormControl,
+    Grid,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Typography,
+    Paper,
+    TableHead,
+} from '@mui/material';
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
+import { formatPrice } from '~/utils/commonUtils';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import DatePicker from 'react-datepicker';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const Statistic = () => {
     // eslint-disable-next-line no-unused-vars
@@ -113,114 +135,115 @@ const Statistic = () => {
 
     return (
         <div>
-            <Form>
-                <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2} className="fs-6 text-nowrap">
-                        Lọc theo
-                    </Form.Label>
-                    <Col sm={10}>
-                        <Form.Control as="select" value={filterType} onChange={handleFilterTypeChange}>
-                            <option value="DAY">Theo ngày</option>
-                            <option value="MONTH">Theo tháng</option>
-                            <option value="YEAR">Theo năm</option>
-                        </Form.Control>
-                    </Col>
-                </Form.Group>
+            <div className="my-3">
+                <h3>Báo cáo</h3>
+                <hr />
+            </div>
+
+            <Grid container spacing={3} alignItems="center mt-3">
+                <Grid item xs={12} md={12}>
+                    <FormControl fullWidth>
+                        <InputLabel id="filter-type-label">Lọc theo</InputLabel>
+                        <Select
+                            labelId="filter-type-label"
+                            value={filterType}
+                            onChange={handleFilterTypeChange}
+                            label="Lọc theo"
+                        >
+                            <MenuItem value="DAY">Theo ngày</MenuItem>
+                            <MenuItem value="MONTH">Theo tháng</MenuItem>
+                            <MenuItem value="YEAR">Theo năm</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
 
                 {filterType === 'DAY' && (
-                    <>
-                        <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm={2} className="fs-6 text-nowrap">
-                                Ngày bắt đầu
-                            </Form.Label>
-                            <Col sm={10} style={{padding: "6px 12px"}}>
-                                <DatePicker
-                                    selected={startDate}
-                                    maxDate={Date.now()}
-                                    onChange={(date) => setStartDate(date)}
-                                    dateFormat="dd/MM/YYYY"
-                                    showYearDropdown
-                                    scrollableYearDropdown
-                                    showMonthDropdown
-                                    
-                                />
-                            </Col>
-                        </Form.Group>
+                    <Grid item xs={12} md={12}>
+                        <Grid item xs={6} md={6}>
+                            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DemoContainer components={['DatePicker', 'DatePicker']}>
+                                    <DatePicker label="Uncontrolled picker" defaultValue={dayjs('2022-04-17')} />
+                                    <DatePicker
+                                        label="Controlled picker"
+                                        value={startDate}
+                                        maxDate={new Date()}
+                                        onChange={(date) => setStartDate(date)}
+                                    />
+                                </DemoContainer>
+                            </LocalizationProvider> */}
+                            {/* <DatePicker label="Uncontrolled picker" defaultValue={dayjs(new Date())} /> */}
+                            <Typography>Ngày bắt đầu</Typography>
+                            <DatePicker
+                                selected={startDate}
+                                maxDate={new Date()}
+                                onChange={(date) => setStartDate(date)}
+                                dateFormat="dd/MM/yyyy"
+                            />
+                        </Grid>
 
-                        <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm={2} className="fs-6 text-nowrap">
-                                Ngày kết thúc
-                            </Form.Label>
-                            <Col sm={10}>
-                                <DatePicker
-                                    selected={endDate}
-                                    maxDate={Date.now()}
-                                    onChange={(date) => setEndDate(date)}
-                                    dateFormat="dd/MM/YYYY"
-                                    showYearDropdown
-                                    scrollableYearDropdown
-                                    showMonthDropdown
-                                />
-                            </Col>
-                        </Form.Group>
-                    </>
+                        <Grid item xs={6} md={6}>
+                            <Typography>Ngày kết thúc</Typography>
+                            <DatePicker
+                                selected={endDate}
+                                maxDate={new Date()}
+                                onChange={(date) => setEndDate(date)}
+                                dateFormat="dd/MM/yyyy"
+                            />
+                        </Grid>
+                    </Grid>
                 )}
-            </Form>
+            </Grid>
 
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th className='text-center'>
-                            <div className="d-flex align-items-center justify-content-between">
-                                <div>
-                                    {filterType === 'DAY' && 'Ngày'}
-                                    {filterType === 'MONTH' && 'Tháng'}
-                                    {filterType === 'YEAR' && 'Năm'}
+            <TableContainer component={Paper} sx={{ marginTop: 3 }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center">
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div>
+                                        {filterType === 'DAY' && 'Ngày'}
+                                        {filterType === 'MONTH' && 'Tháng'}
+                                        {filterType === 'YEAR' && 'Năm'}
+                                    </div>
+                                    <div>
+                                        <IconButton
+                                            onClick={() => handleChangeSortType('ASC')}
+                                            color={sortType === 'ASC' ? 'primary' : 'default'}
+                                        >
+                                            <ArrowUpward />
+                                        </IconButton>
+                                        <IconButton
+                                            onClick={() => handleChangeSortType('DESC')}
+                                            color={sortType === 'DESC' ? 'primary' : 'default'}
+                                        >
+                                            <ArrowDownward />
+                                        </IconButton>
+                                    </div>
                                 </div>
-                                <div>
-                                    <FontAwesomeIcon
-                                        className={clsx('me-3', {
-                                            [[styles['sort-type-active']]]: sortType === 'ASC',
-                                        })}
-                                        icon={faArrowUp}
-                                        onClick={() => handleChangeSortType('ASC')}
-                                    />
-                                    <FontAwesomeIcon
-                                        className={clsx('me-3', {
-                                            [[styles['sort-type-active']]]: sortType === 'DESC',
-                                        })}
-                                        icon={faArrowDown}
-                                        onClick={() => handleChangeSortType('DESC')}
-                                    />
-                                </div>
-                            </div>
-                        </th>
-                        <th className='text-center'>Số lượng sách bán</th>
-                        <th className='text-center'>Doanh thu (VND)</th>
-                    </tr>
-                </thead>
-                {statistics?.length > 0 ? (
-                    <tbody>
-                        {statistics.map((stat, index) => (
-                            <tr key={index}>
-                                <td >{stat.date}</td>
-                                <td >{stat.numberOfBooksSold}</td>
-                                <td >{stat.revenue}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                ) : (
-                    <tbody>
-                        <tr>
-                            <td colSpan="3">
-                                <div className="fz-16 text-center" style={{ width: '100%' }}>
+                            </TableCell>
+                            <TableCell align="center">Số lượng sách bán</TableCell>
+                            <TableCell align="center">Doanh thu (VND)</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {statistics.length > 0 ? (
+                            statistics.map((stat, index) => (
+                                <TableRow key={index}>
+                                    <TableCell align="center">{stat.date}</TableCell>
+                                    <TableCell align="center">{stat.numberOfBooksSold} quyển sách</TableCell>
+                                    <TableCell align="center">{formatPrice(stat.revenue, 'VND')}</TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={3} align="center">
                                     Không có thống kê vào ngày này
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                )}
-            </Table>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     );
 };

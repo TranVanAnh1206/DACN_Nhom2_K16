@@ -1,22 +1,38 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { Button, Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
+import { Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
 import styles from './AdminPage.module.scss';
 import { adminChangeStatusOfOrderService, adminGetAllOrdersService } from '~/services/orderService';
 import { faPenAlt } from '@fortawesome/free-solid-svg-icons';
-
 import moment from 'moment';
-import { formatCurrency } from '~/utils/commonUtils';
+import { formatCurrency, formatPrice } from '~/utils/commonUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+} from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '~/redux/slices/loadingSlide';
+import customToastify from '~/utils/customToastify';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { DataGrid } from '@mui/x-data-grid';
 
 const ManageOrder = ({ setSpinning }) => {
     // eslint-disable-next-line no-unused-vars
-    const [loading, setLoading] = useState(false);
-
+    const dispatch = useDispatch();
     const [orders, setOrders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
-    const pageSize = 5;
+    const pageSize = 20;
 
     const fetchGetOrders = async () => {
         try {
@@ -81,71 +97,173 @@ const ManageOrder = ({ setSpinning }) => {
     });
 
     const handleSubmitUpdateOrder = async () => {
+        dispatch(setLoading(true));
         try {
-            setSpinning(true);
             await adminChangeStatusOfOrderService({ orderId: orderUpdateInfo?.id, status: orderUpdateInfo?.status });
+            customToastify.success('Cập nhật trạng thái đơn hàng thành công!');
             fetchGetOrders();
         } catch (error) {
             console.log(error);
+            customToastify.success('Cập nhật trạng thái đơn hàng thất bại');
         } finally {
             handleCloseModalUpdateOrder();
-            setSpinning(false);
+            dispatch(setLoading(false));
         }
     };
 
+    const columns = [
+        {
+            field: 'orderItems',
+            headerName: 'Sản phẩm',
+            flex: 1.5,
+            headerAlign: 'left',
+            align: 'left',
+            renderCell: (params) => (
+                <div style={{ display: 'flex', margin: '10px', flexDirection: 'column', gap: '8px' }}>
+                    {params.row.orderItems.map((item, index) => (
+                        <div key={item.bookId || index} className="d-flex align-items-center gap-2">
+                            <img
+                                src={item.bookImage || '/default-image.jpg'}
+                                alt={item.bookName}
+                                style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = '/default-image.jpg';
+                                }}
+                            />
+                            <div>
+                                <div
+                                    style={{
+                                        height: '40px',
+                                        margin: '3px 9px',
+                                        display: '-webkit-box',
+                                        WebkitBoxOrient: 'vertical',
+                                        WebkitLineClamp: 2,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                    }}
+                                    className="fw-bold"
+                                >
+                                    {item.bookName}
+                                </div>
+                                <div style={{ margin: '3px 9px' }}>{formatCurrency(item.bookPrice, 'VND')}</div>
+                                <div style={{ margin: '3px 9px' }}>x {item.quantity}</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ),
+        },
+        {
+            field: 'email',
+            headerName: 'Email',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        // {
+        //     field: 'address',
+        //     headerName: 'Địa chỉ',
+        //     flex: 1,
+        //     headerAlign: 'center',
+        //     align: 'center',
+        // },
+        {
+            field: 'amount',
+            headerName: 'Tổng tiền',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => <>{formatCurrency(params?.row?.amount, 'VND')}</>,
+        },
+        {
+            field: 'date',
+            headerName: 'Ngày',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => <>{moment(params.row?.date).format('DD/MM/YYYY')}</>,
+        },
+        {
+            field: 'status',
+            headerName: 'Trạng thái',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => {
+                const obj = {
+                    0: 'Đã huỷ',
+                    1: 'Đã thanh toán',
+                    2: 'Chưa thanh toán',
+                    3: 'Đã giao hàng',
+                    4: 'Đang xử lý',
+                };
+
+                return (
+                    <>
+                        {params?.row?.status === 0 ? (
+                            <p className="text-danger">{obj[params?.row?.status]}</p>
+                        ) : params?.row?.status === 3 ? (
+                            <p className="text-success">{obj[params?.row?.status]}</p>
+                        ) : (
+                            <p>{obj[params?.row?.status]}</p>
+                        )}
+                    </>
+                );
+            },
+        },
+        {
+            field: 'actions',
+            headerName: '',
+            flex: 0.4,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => (
+                <>
+                    <Button
+                        variant="text"
+                        color="warning"
+                        style={{ margin: 8 }}
+                        onClick={() => handleShowModalUpdateOrder(params.row.id, params.row.status)}
+                    >
+                        <EditOutlinedIcon />
+                    </Button>
+                </>
+            ),
+            sortable: false,
+        },
+    ];
+
     return (
         <div id="manage-orders">
-            <div className="table-responsive  d-flex justify-content-center">
-                <table className="w-100 table table-bordered">
-                    <thead>
-                        <tr>
-                            <th className="text-center">Email</th>
-                            <th className="text-center">Địa chỉ</th>
-                            <th className="text-center text-nowrap">Tổng tiền</th>
-                            <th className="text-center">Ngày</th>
-                            <th className="text-center">Trạng thái</th>
-                            <th className="text-center"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders?.map((order) => {
-                            const obj = {
-                                0: 'Đã huỷ',
-                                1: 'Đã thanh toán',
-                                2: 'Chưa thanh toán',
-                                3: 'Đã giao hàng',
-                                4: 'Đang xử lý',
-                            };
-                            return (
-                                <tr key={`order-${order?.id}`}>
-                                    <td>{order?.userEmail}</td>
-                                    <td>{order?.userAddress}</td>
-                                    <td className="text-center">{formatCurrency(order?.totalAmount, 'VND')}</td>
-                                    <td className="text-center">{moment(order?.date).format('DD/MM/YYYY')}</td>
-                                    <td className="text-center">{obj[order?.status]}</td>
-                                    <td className="">
-                                        <Button
-                                            className="fz-16"
-                                            variant="warning"
-                                            onClick={() => handleShowModalUpdateOrder(order?.id, order?.status)}
-                                        >
-                                            <FontAwesomeIcon icon={faPenAlt} className="text-white" />
-                                        </Button>
-                                        {/* <Button
-                                                className="fz-16"
-                                                variant="danger"
-                                                onClick={() => handleShowModalDeleteOrder(order?.id, order?.name)}
-                                            >
-                                                Huỷ đơn
-                                            </Button> */}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+            <div className="my-3">
+                <h3>Danh sách đơn đặt hàng</h3>
+                <hr />
             </div>
-            <Pagination className="d-flex justify-content-center">
+            <Box sx={{ width: '100%' }}>
+                <DataGrid
+                    rows={orders.map((order) => ({
+                        id: order?.id,
+                        email: order?.userEmail,
+                        address: order?.userAddress,
+                        amount: order?.totalAmount,
+                        date: order?.date,
+                        status: order?.status,
+                        orderItems: order?.orderItems,
+                    }))}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[10, 20]}
+                    disableSelectionOnClick
+                    getRowHeight={() => 'auto'}
+                    sx={{
+                        '& .MuiDataGrid-columnHeaders': { backgroundColor: '#f5f5f5' },
+                        '& .MuiDataGrid-row': { cursor: 'pointer' },
+                    }}
+                />
+            </Box>
+
+            <Pagination className="mt-3 d-flex justify-content-center">
                 {Array.from({ length: totalPage }, (_, i) => (i = i + 1))?.map((i) => {
                     return (
                         <Pagination.Item
@@ -160,45 +278,40 @@ const ManageOrder = ({ setSpinning }) => {
                 })}
             </Pagination>
 
-            <Modal show={showModalUpdateOrder} onHide={handleCloseModalUpdateOrder}>
-                <Modal.Header>
-                    <Modal.Title>Sửa trạng thái</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group as={Row}>
-                            <Form.Label column sm="2">
-                                Trạng thái
-                            </Form.Label>
-                            <Col sm="10">
-                                <Form.Select
-                                    value={orderUpdateInfo?.status}
-                                    onChange={(e) =>
-                                        setOrderUpdateInfo({
-                                            ...orderUpdateInfo,
-                                            status: e.target.value,
-                                        })
-                                    }
-                                >
-                                    <option value={0}>Đã huỷ</option>
-                                    <option value={1}>Đã thanh toán</option>
-                                    <option value={2}>Chưa thanh toán</option>
-                                    <option value={3}>Đã giao hàng</option>
-                                    <option value={4}>Đang xử lý</option>
-                                </Form.Select>
-                            </Col>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateOrder}>
+            <Dialog open={showModalUpdateOrder} onClose={handleCloseModalUpdateOrder} fullWidth maxWidth="sm">
+                <DialogTitle>Cập nhật trạng thái đươn hàng</DialogTitle>
+                <DialogContent>
+                    <FormControl fullWidth variant="outlined" margin="normal">
+                        <InputLabel id="order-status-label">Trạng thái</InputLabel>
+                        <Select
+                            labelId="order-status-label"
+                            id="order-status"
+                            value={orderUpdateInfo?.status ?? ''}
+                            onChange={(e) =>
+                                setOrderUpdateInfo({
+                                    ...orderUpdateInfo,
+                                    status: e.target.value,
+                                })
+                            }
+                            label="Trạng thái"
+                        >
+                            <MenuItem defaultChecked value={''}>
+                                Chọn trạng thái cho đơn hàng
+                            </MenuItem>
+                            <MenuItem value={0}>Hủy đơn hàng</MenuItem>
+                            <MenuItem value={3}>Đã giao hàng</MenuItem>
+                        </Select>
+                    </FormControl>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="outlined" color="secondary" onClick={handleCloseModalUpdateOrder}>
                         Huỷ
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateOrder}>
+                    <Button variant="contained" color="primary" onClick={handleSubmitUpdateOrder}>
                         Cập nhật
                     </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

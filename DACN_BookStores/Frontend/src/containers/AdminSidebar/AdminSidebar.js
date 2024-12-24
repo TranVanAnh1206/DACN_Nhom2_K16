@@ -10,9 +10,11 @@ import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import StackedLineChartIcon from '@mui/icons-material/StackedLineChart';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { adminNavigations } from '~/navigates';
+
 const AdminSidebar = () => {
     const userInfo = useSelector((state) => state.user);
-  return (
+    return (
         <div id="side-bar" className="d-none d-lg-block mb-2">
             <div className="wrapper h-100">
                 <div className="side-bar-top d-flex align-items-center py-2 gap-3 border-2 border-bottom border-secondary-subtle">
@@ -27,67 +29,16 @@ const AdminSidebar = () => {
                     </div>
                 </div>
                 <ul className="side-bar-bottom list-unstyled">
-                    <li>
-                        <NavLink
-                            className="side-bar-item fw-bold text-decoration-none d-inline-block"
-                            to={'/admin/manage-users'}
-                        >
-                            <AccountBoxIcon /> Quản lý người dùng
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className="side-bar-item fw-bold text-decoration-none d-inline-block"
-                            to={'/admin/manage-books'}
-                        >
-                            <BookIcon /> Quản lý sách
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className={`side-bar-item fw-bold text-decoration-none d-inline-block `}
-                            to="/admin/manage-authors"
-                        >
-                            <AdminPanelSettingsIcon /> Quản lý tác giả
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className="side-bar-item fw-bold text-decoration-none d-inline-block"
-                            to={'/admin/manage-genre'}
-                        >
-                            <CalendarViewMonthIcon /> Quản lý thể loại
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className="side-bar-item fw-bold text-decoration-none d-inline-block"
-                            to={'/admin/manage-orders'}
-                        >
-                            <ShoppingCartCheckoutIcon /> Quản lý đơn hàng
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className="side-bar-item fw-bold text-decoration-none d-inline-block"
-                            to={'/admin/manage-vouchers'}
-                        >
-                            <CardGiftcardIcon /> Quản lý giảm giá
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className="side-bar-item fw-bold text-decoration-none d-inline-block"
-                            to={'/admin/statistic'}
-                        >
-                            <StackedLineChartIcon /> Thống kê
-                        </NavLink>
-                    </li>
-                    <li>
-                        <span className="delete-acc d-inline-block fw-bold text-decoration-none text-danger">
-                            <HighlightOffIcon /> Delete Account
-                        </span>
-                    </li>
+                    {adminNavigations.map((item, index) => (
+                        <li key={`admin-nav-${index}`}>
+                            <NavLink
+                                className="w-100 side-bar-item fw-bold text-decoration-none d-inline-block"
+                                to={item.path}
+                            >
+                                {item.icon} {item.name}
+                            </NavLink>
+                        </li>
+                    ))}
                 </ul>
             </div>
         </div>

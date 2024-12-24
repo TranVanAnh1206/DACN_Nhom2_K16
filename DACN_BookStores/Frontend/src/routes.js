@@ -39,7 +39,6 @@ const routes = [
 
 export const adminRoutes = [
     { path: '/admin', element: AdminPage, layout: AdminLayout },
-
     { path: '/admin/manage-users', element: ManageUser, layout: AdminLayout },
     { path: '/admin/manage-books', element: ManageBook, layout: AdminLayout },
     { path: '/admin/manage-authors', element: ManageAuthor, layout: AdminLayout },

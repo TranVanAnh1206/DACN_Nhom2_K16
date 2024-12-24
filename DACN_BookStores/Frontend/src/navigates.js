@@ -1,38 +1,57 @@
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import BookIcon from '@mui/icons-material/Book';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import CalendarViewMonthIcon from '@mui/icons-material/CalendarViewMonth';
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import StackedLineChartIcon from '@mui/icons-material/StackedLineChart';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+
 const adminNavigations = [
+    // {
+    //     name: 'Dashboard',
+    //     path: '/admin/dashboard',
+    //     icon: '',
+    // },
     {
-        name: 'Dashboard',
-        path: '/admin/dashboard',
-        icon: '',
+        name: 'Người dùng',
+        path: '/admin/manage-users',
+        icon: <AccountBoxIcon />,
     },
     {
-        name: 'Users',
-        path: '/admin/users',
-        icon: '',
+        name: 'Quản lý sách',
+        path: '/admin/manage-books',
+        icon: <BookIcon />,
     },
     {
-        name: 'Authors',
-        path: '/admin/author',
-        icon: '',
+        name: 'Quản lý tác giả',
+        path: '/admin/manage-authors',
+        icon: <AdminPanelSettingsIcon />,
     },
     {
-        name: 'Genres',
-        path: '/admin/genres',
-        icon: '',
+        name: 'Quản lý thể loại',
+        path: '/admin/manage-genre',
+        icon: <CalendarViewMonthIcon />,
+    },
+    // {
+    //     name: 'Publishers',
+    //     path: '/admin/publisher',
+    //     icon: '',
+    // },
+    {
+        name: 'Quản lý đơn đặt hàng',
+        path: '/admin/manage-orders',
+        icon: <ShoppingCartCheckoutIcon />,
     },
     {
-        name: 'Publishers',
-        path: '/admin/publisher',
-        icon: '',
-    },
-    {
-        name: 'Order',
-        path: '/admin/order',
-        icon: '',
-    },
-    {
-        name: 'Statistic',
+        name: 'Báo cáo',
         path: '/admin/statistic',
-        icon: '',
+        icon: <StackedLineChartIcon />,
+    },
+    {
+        name: 'Quản lý mã giảm giá',
+        path: '/admin/manage-vouchers',
+        icon: <CardGiftcardIcon />,
     },
 ];
 

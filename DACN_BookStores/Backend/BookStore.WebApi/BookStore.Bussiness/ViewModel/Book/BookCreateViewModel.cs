@@ -21,8 +21,8 @@ namespace BookStore.Bussiness.ViewModel.Book
 
         public int BookGroupId { get; set; }
 
-        //[Required]
-        //public int PublisherId { get; set; }
+        [Required]
+        public int PublisherId { get; set; }
 
         public DateTime PublishedAt { get; set; }
 

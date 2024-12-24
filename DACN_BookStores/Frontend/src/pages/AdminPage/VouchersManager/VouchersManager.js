@@ -1,17 +1,30 @@
 import { useEffect, useState } from 'react';
 import { CreateVoucherService, DeleteVoucherService, getMyVoucherService } from '~/services/voucherService';
-import Table from 'react-bootstrap/Table';
 import { formatCurrency, formatDateTime, formatPrice } from '~/utils/commonUtils';
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFloppyDisk, faPenAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
-import { TextField } from '@mui/material';
+import {
+    Box,
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 import customToastify from '~/utils/customToastify';
 import { setLoading } from '~/redux/slices/loadingSlide';
 import Swal from 'sweetalert2';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { DataGrid } from '@mui/x-data-grid';
+import moment from 'moment';
 
 function GenerateRandomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -121,57 +134,165 @@ const VouchersManager = () => {
         });
     };
 
+    const columns = [
+        {
+            field: 'id',
+            headerName: 'Id',
+            flex: 0.5,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'code',
+            headerName: 'Code',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'discount',
+            headerName: 'Giảm giá (vnđ)',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => <>{formatCurrency(params?.row?.discount, 'VND')}</>,
+        },
+        {
+            field: 'expDate',
+            headerName: 'Ngày hết hạn',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => <>{moment(params.row?.date).format('DD/MM/YYYY')}</>,
+        },
+        {
+            field: 'useCount',
+            headerName: 'Lượt sử dụng',
+            flex: 0.5,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'used',
+            headerName: 'Đã sử dụng',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        // {
+        //     field: 'status',
+        //     headerName: 'Trạng thái',
+        //     flex: 1,
+        //     headerAlign: 'center',
+        //     align: 'center',
+        // },
+        {
+            field: 'actions',
+            headerName: '',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => (
+                <>
+                    <Button
+                        variant="text"
+                        color="warning"
+                        style={{ margin: 8 }}
+                        onClick={() => handleShowModalUpdateOrder(params.row.id, params.row.status)}
+                    >
+                        <EditOutlinedIcon />
+                    </Button>
+
+                    <Button variant="text" color="error" onClick={() => handleDeleteVoucher(params.row?.id)}>
+                        <DeleteOutlineOutlinedIcon />
+                    </Button>
+                </>
+            ),
+            sortable: false,
+        },
+    ];
+
     return (
         <div>
+            <div className="my-3">
+                <h3>Danh sách mã giảm giá</h3>
+                <hr />
+            </div>
+
             <div className="d-flex justify-content-between align-content-center mb-3">
                 <div>
-                    <Button variant="primary" onClick={handleShow}>
+                    <Button variant="contained" onClick={handleShow}>
                         Thêm mới
                     </Button>
                 </div>
             </div>
 
-            <div>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                            <th className="text-center">#</th>
-                            <th className="text-center">Code</th>
-                            <th className="text-center">Giảm giá (VND)</th>
-                            <th className="text-center">Ngày hết hạn</th>
-                            <th style={{ width: '15%' }} className="text-center">
-                                Lượt sử dụng tối đa
-                            </th>
-                            <th style={{ width: '15%' }} className="text-center">
-                                Đã sử dụng
-                            </th>
-                            <th className="text-center">Trạng thái</th>
-                            <th className="text-center"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {vouchers?.map((item, index) => (
-                            <tr key={`voucher-${index}`}>
-                                <td className="text-center">{index + 1}</td>
-                                <td>{item?.code}</td>
-                                <td>{formatPrice(item?.discountAmount, 'VND')}</td>
-                                <td>{formatDateTime(item?.expirationDate)}</td>
-                                <td>{item?.maxUsage}</td>
-                                <td>{item?.currentUsage}</td>
-                                <td>{item?.status}</td>
-                                <td className="text-center">
-                                    <Button className="me-2" variant="primary">
-                                        <FontAwesomeIcon icon={faPenAlt} />
-                                    </Button>
-                                    <Button variant="danger" onClick={() => handleDeleteVoucher(item?.id)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+            <Box
+                sx={{
+                    width: '100%',
+                    overflowX: 'auto', // Thêm thanh cuộn ngang
+                    '& .MuiDataGrid-root': {
+                        minWidth: '1000px', // Đảm bảo chiều rộng tối thiểu để kích hoạt cuộn ngang
+                    },
+                    '& .MuiDataGrid-columnHeaders': {
+                        backgroundColor: '#f5f5f5',
+                    },
+                }}
+            >
+                <DataGrid
+                    rows={vouchers.map((voucher) => ({
+                        id: voucher?.id,
+                        code: voucher?.code,
+                        discount: voucher?.discountAmount,
+                        expDate: voucher?.expirationDate,
+                        useCount: voucher?.maxUsage,
+                        used: voucher?.currentUsage,
+                        status: voucher?.status,
+                    }))}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    disableSelectionOnClick
+                    autoHeight
+                    sx={{
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f5f5f5',
+                        },
+                    }}
+                />
+            </Box>
+
+            {/* <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            {columns.map((column) => (
+                                <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                                    {column.headerName}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {vouchers.map((row) => {
+                            return (
+                                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                    {columns.map((column) => {
+                                        const value = row[column.field];
+                                        return (
+                                            <TableCell key={column.field} align={column.align}>
+                                                {column.format && typeof value === 'number'
+                                                    ? column.format(value)
+                                                    : value}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            );
+                        })}
+                    </TableBody>
                 </Table>
-            </div>
+            </TableContainer> */}
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
@@ -276,7 +397,7 @@ const VouchersManager = () => {
                                     sx={{ mb: 3 }}
                                 />
 
-                                <Button variant="success" type="submit" disabled={errors === null}>
+                                <Button variant="outlined" type="submit" disabled={errors === null}>
                                     <FontAwesomeIcon icon={faFloppyDisk} className="me-2" />
                                     Lưu
                                 </Button>

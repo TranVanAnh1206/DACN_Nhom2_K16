@@ -1,6 +1,6 @@
 import { Modal, Button, Row, Col, Form, Pagination } from 'react-bootstrap';
+import React from 'react';
 import { useEffect, useRef, useState } from 'react';
-import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import DatePicker from 'react-datepicker';
 import { createBookService, deleteBookService, getBookPagingService, updateBookService } from '~/services/bookService';
@@ -14,8 +14,51 @@ import axios from 'axios';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
 import { formatPrice } from '~/utils/commonUtils';
 import StarRateIcon from '@mui/icons-material/StarRate';
-const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging, setSpinning }) => {
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Typography,
+    Box,
+    Autocomplete,
+    FormHelperText,
+    Select,
+} from '@mui/material';
+import 'react-datepicker/dist/react-datepicker.css';
+import { useDispatch } from 'react-redux';
+import { getAllPublisherService } from '~/services/publisherService';
+import { setLoading } from '~/redux/slices/loadingSlide';
+
+const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging }) => {
+    const dispatch = useDispatch();
     const [genres, setGenres] = useState([]);
+    const [publishers, setPublishers] = useState([]);
+    const [bookGenge, setBookGenre] = useState();
+    const [authors, setAuthors] = useState([]);
+
+    const formRef = useRef(null);
+    const animatedComponents = makeAnimated();
+
+    const [validated, setValidated] = useState(false);
+    const [fileUpload, setFileUpload] = useState(null);
+    const [bookInfo, setBookInfo] = useState({
+        name: '',
+        genres: '1',
+        price: '',
+        authors: [],
+        description: '',
+        publicationDate: new Date(),
+        totalPageNumber: '',
+        remaining: '',
+        image: null,
+        PublisherId: 1,
+    });
+
     useEffect(() => {
         const fetchGetGenres = async () => {
             try {
@@ -33,11 +76,22 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
             }
         };
 
-        fetchGetGenres();
-    }, []);
+        const fetchGetPublisher = async () => {
+            try {
+                const res = await getAllPublisherService();
+                if (res.data) {
+                    setPublishers(
+                        res.data?.map((publisher) => ({
+                            value: publisher?.id,
+                            label: publisher?.name,
+                        })),
+                    );
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
 
-    const [authors, setAuthors] = useState([]);
-    useEffect(() => {
         const fetchGetAuthors = async () => {
             try {
                 const res = await getAllAuthorsService();
@@ -55,26 +109,9 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
         };
 
         fetchGetAuthors();
+        fetchGetPublisher();
+        fetchGetGenres();
     }, []);
-
-    const formRef = useRef(null);
-    const animatedComponents = makeAnimated();
-
-    const [validated, setValidated] = useState(false);
-
-    const [fileUpload, setFileUpload] = useState(null);
-
-    const [bookInfo, setBookInfo] = useState({
-        name: '',
-        genres: '1',
-        price: '',
-        authors: [],
-        description: '',
-        publicationDate: new Date(),
-        totalPageNumber: '',
-        remaining: '',
-        image: null,
-    });
 
     useEffect(() => {
         if (action === 'update-book') {
@@ -86,6 +123,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
                     value: author?.id,
                     label: author?.fullName,
                 })),
+                publisherId: data?.publisherId,
                 description: data?.description,
                 publicationDate: data?.publicationDate,
                 totalPageNumber: data?.totalPageNumber,
@@ -121,14 +159,18 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
         }
     };
 
+    const handleChangeGenge = (e) => {
+        setBookGenre(e.target.value);
+    };
+
     const handleSubmit = async () => {
+        dispatch(setLoading(true));
         try {
             const form = formRef.current;
             if (form.checkValidity() === false) {
                 setValidated(true);
             } else {
                 let imgUrl;
-                setSpinning(true);
 
                 if (fileUpload) {
                     let formData = new FormData();
@@ -157,8 +199,10 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
                         totalPageNumber: Number(bookInfo?.totalPageNumber),
                         bookGroupId: Number(bookInfo?.genres),
                         publishedAt: bookInfo?.publicationDate,
+                        publisherId: bookInfo.publisherId,
                         authorId: bookInfo?.authors?.map((author) => author?.value),
                     });
+                    customToastify.success('Cập nhật thành công!');
                 } else if (action === 'create-book') {
                     await createBookService({
                         title: bookInfo?.name,
@@ -168,184 +212,179 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
                         totalPageNumber: Number(bookInfo?.totalPageNumber),
                         bookGroupId: Number(bookInfo?.genres),
                         publishedAt: bookInfo?.publicationDate,
+                        publisherId: bookInfo.publisherId,
                         authorId: bookInfo?.authors?.map((author) => author?.value),
                     });
+
+                    customToastify.success('Thêm mới thành công!');
                 }
+
                 fetchGetBookPaging();
             }
         } catch (error) {
+            customToastify.error('Thêm mới thất bại!');
             console.log(error);
         } finally {
             handleCloseModal();
-            setSpinning(false);
+            dispatch(setLoading(false));
         }
     };
 
     return (
-        <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header style={{ fontSize: '1.6rem' }} closeButton>
-                <Modal.Title style={{ fontSize: '2.6rem' }}>
+        <Dialog open={showModal} onClose={handleCloseModal} fullWidth maxWidth="md">
+            <DialogTitle>
+                <Typography variant="h5" textAlign="center">
                     {action === 'create-book' ? 'Thêm sách' : 'Sửa sách'}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Form ref={formRef} noValidate validated={validated}>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Tên sách
-                        </Form.Label>
-                        <Col sm="10">
-                            <Form.Control
+                </Typography>
+            </DialogTitle>
+            <DialogContent>
+                <Box component="form" noValidate>
+                    <Form ref={formRef} noValidate validated={validated}>
+                        <FormControl fullWidth margin="normal">
+                            <TextField
+                                label="Tên sách"
                                 name="name"
                                 value={bookInfo.name}
                                 onChange={handleChangeForm}
-                                minLength={3}
                                 required
+                                inputProps={{ minLength: 3 }}
                             />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Tác giả
-                        </Form.Label>
-                        <Col sm="10" className="fz-16">
-                            <Select
-                                value={bookInfo?.authors}
-                                components={animatedComponents}
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <Autocomplete
+                                multiple
+                                id="tags-outlined"
                                 options={authors}
-                                isMulti={true}
-                                closeMenuOnSelect={false}
-                                required
-                                onChange={(e) =>
-                                    handleChangeForm({
-                                        target: {
-                                            name: 'authors',
-                                            value: e.map((item) => ({
-                                                value: item.value,
-                                                label: item.label,
-                                            })),
-                                        },
-                                    })
-                                }
+                                getOptionLabel={(option) => option?.label}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Chọn tác giả" placeholder="Tác giả" />
+                                )}
                             />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Thể loại
-                        </Form.Label>
-                        <Col sm="10" className="fz-16">
-                            <Form.Select name="genres" value={`${bookInfo?.genres}`} onChange={handleChangeForm}>
-                                {genres.map((genre) => {
-                                    return (
-                                        <option value={genre?.value} key={`genre-${genre?.value}`}>
-                                            {genre?.label}
-                                        </option>
-                                    );
-                                })}
-                            </Form.Select>
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Giá
-                        </Form.Label>
-                        <Col sm="10">
-                            <Form.Control
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="demo-simple-select-helper-label">Thể loại</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-helper-label"
+                                name="genres"
+                                id="demo-simple-select-helper"
+                                value={bookInfo.genres}
+                                label="Thể loại"
+                                onChange={handleChangeForm}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {genres.map((e, i) => (
+                                    <MenuItem key={`genre-${i}`} value={e.value}>
+                                        <em>{e.label}</em>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            {/* <FormHelperText>With label + helper text</FormHelperText> */}
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel id="demo-simple-select-helper-label">Nhà xuất bản</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-helper-label"
+                                id="demo-simple-select-helper"
+                                name="publisherId"
+                                value={bookInfo.publisherId}
+                                label="Nhà xuất bản"
+                                onChange={handleChangeForm}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                {publishers.map((e, i) => (
+                                    <MenuItem key={`genre-${i}`} value={e.value}>
+                                        <em>{e.label}</em>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            {/* <FormHelperText>With label + helper text</FormHelperText> */}
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <TextField
+                                label="Giá"
                                 name="price"
                                 type="number"
                                 value={bookInfo.price}
                                 onChange={handleChangeForm}
                                 required
                             />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3 ">
-                        <Form.Label column sm="2">
-                            Mô tả
-                        </Form.Label>
-                        <Col sm="10">
-                            <Form.Control
-                                as="textarea"
-                                rows={3}
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <TextField
+                                label="Mô tả"
                                 name="description"
+                                multiline
+                                rows={3}
                                 value={bookInfo.description}
                                 onChange={handleChangeForm}
                             />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Ngày xuất bản
-                        </Form.Label>
-                        <Col sm="10">
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <Typography variant="body1">Ngày xuất bản</Typography>
                             <DatePicker
-                                className="fz-16"
-                                dateFormat="dd/MM/yyyy"
+                                fullWidth
                                 selected={bookInfo.publicationDate}
                                 onChange={(date) =>
                                     handleChangeForm({
-                                        target: {
-                                            name: 'publicationDate',
-                                            value: date,
-                                        },
+                                        target: { name: 'publicationDate', value: date },
                                     })
                                 }
-                                required
+                                dateFormat="dd/MM/yyyy"
                             />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Tổng số trang
-                        </Form.Label>
-                        <Col sm="10">
-                            <Form.Control
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <TextField
+                                label="Tổng số trang"
                                 name="totalPageNumber"
+                                type="number"
                                 value={bookInfo.totalPageNumber}
                                 onChange={handleChangeForm}
                                 required
                             />
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label column sm="2">
-                            Ảnh bìa
-                        </Form.Label>
-                        <Col sm="10">
-                            <Form.Control type="file" name="image" onChange={handleFileChange} />
+                        </FormControl>
+
+                        <FormControl fullWidth margin="normal">
+                            <Typography variant="body1">Ảnh bìa</Typography>
+                            <TextField type="file" name="image" onChange={handleFileChange} />
                             {bookInfo?.image && (
-                                <div>
+                                <Box mt={2} textAlign="center">
                                     <img
-                                        src={bookInfo?.image}
+                                        src={bookInfo.image}
                                         alt="Uploaded Preview"
-                                        style={{
-                                            width: '39rem',
-                                            height: 'auto',
-                                            marginTop: '1.6rem',
-                                        }}
+                                        style={{ maxWidth: '100%', height: 'auto' }}
                                     />
-                                </div>
+                                </Box>
                             )}
-                        </Col>
-                    </Form.Group>
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button className="fz-16" variant="secondary" onClick={handleCloseModal}>
-                    Close
+                        </FormControl>
+                    </Form>
+                </Box>
+            </DialogContent>
+            <DialogActions>
+                <Button className="text-danger" onClick={handleCloseModal} color="danger" variant="outlined">
+                    Đóng
                 </Button>
-                <Button className="fz-16" variant="primary" onClick={handleSubmit}>
-                    Save Changes
+                <Button className="text-primary" onClick={handleSubmit} color="primary" variant="contained">
+                    Lưu thay đổi
                 </Button>
-            </Modal.Footer>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 };
 
-const ManageBook = ({ setSpinning }) => {
-    // eslint-disable-next-line no-unused-vars
-    const [loading, setLoading] = useState(false);
+const ManageBook = () => {
+    const dispatch = useDispatch();
 
     const [bookList, setBookList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -355,7 +394,6 @@ const ManageBook = ({ setSpinning }) => {
 
     const fetchGetBookPaging = async () => {
         try {
-            setLoading(true);
             const res = await getBookPagingService({
                 pageNumber: currentPage,
                 pageSize: pageSize,
@@ -384,7 +422,7 @@ const ManageBook = ({ setSpinning }) => {
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false);
+            //
         }
     };
 
@@ -430,7 +468,6 @@ const ManageBook = ({ setSpinning }) => {
     const handleCloseModalDeleteBook = () => setShowModalDeleteBook(false);
     const handleDeleteBook = async (bookId) => {
         try {
-            setSpinning(true);
             await deleteBookService(bookId);
             fetchGetBookPaging();
             customToastify.success('Xoá sách thành công');
@@ -438,7 +475,6 @@ const ManageBook = ({ setSpinning }) => {
             console.log(error);
         } finally {
             setShowModalDeleteBook(false);
-            setSpinning(false);
         }
     };
 
@@ -450,6 +486,10 @@ const ManageBook = ({ setSpinning }) => {
 
     return (
         <div id="manage-books">
+            <div>
+                <h3 className="my-3">Quản lý sách</h3>
+                <hr />
+            </div>
             <div className="d-flex align-items-center justify-content-between flex-wrap mb-2 gap-2">
                 <div>
                     <input
@@ -558,7 +598,6 @@ const ManageBook = ({ setSpinning }) => {
                     showModal={showModalAddBook}
                     handleCloseModal={handleCloseModalAddBook}
                     fetchGetBookPaging={fetchGetBookPaging}
-                    setSpinning={setSpinning}
                 />
             )}
             {showModalUpdateBook && (
@@ -568,7 +607,6 @@ const ManageBook = ({ setSpinning }) => {
                     handleCloseModal={handleCloseModalUpdateBook}
                     fetchGetBookPaging={fetchGetBookPaging}
                     data={currentBookUpdate}
-                    setSpinning={setSpinning}
                 />
             )}
             <Modal show={showModalDeleteBook} onHide={handleCloseModalDeleteBook}>

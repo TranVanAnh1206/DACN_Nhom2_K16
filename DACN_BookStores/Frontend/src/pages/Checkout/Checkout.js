@@ -356,9 +356,9 @@ const Checkout = () => {
                         Đặt hàng
                     </button>
 
-                    <button type="button" onClick={() => handleSendMessage()}>
+                    {/* <button type="button" onClick={() => handleSendMessage()}>
                         Check signalr
-                    </button>
+                    </button> */}
                 </div>
             </form>
 

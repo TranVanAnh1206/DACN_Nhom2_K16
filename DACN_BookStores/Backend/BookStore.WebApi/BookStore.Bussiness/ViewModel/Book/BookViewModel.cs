@@ -27,7 +27,7 @@ namespace BookStore.Bussiness.ViewModel.Book
 
         public int Remaining { get; set; }
 
-        //public int PublisherId { get; set; }
+        public int PublisherId { get; set; }
         //public string PublisherName { get; set; }
         // public PublisherViewModel Publisher { get; set; }
 

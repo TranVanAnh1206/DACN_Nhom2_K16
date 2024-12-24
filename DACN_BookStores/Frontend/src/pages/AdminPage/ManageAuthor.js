@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { Button, Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
+import { Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
 import {
     createAuthorService,
     deleteAuthorService,
@@ -8,11 +8,26 @@ import {
     updateAuthorService,
 } from '~/services/authorService';
 import styles from './AdminPage.module.scss';
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField,
+} from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '~/redux/slices/loadingSlide';
+import customToastify from '~/utils/customToastify';
+import { DataGrid } from '@mui/x-data-grid';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
-const ManageAuthor = ({ setSpinning }) => {
+const ManageAuthor = () => {
     // eslint-disable-next-line no-unused-vars
-    const [loading, setLoading] = useState(false);
-
+    const dispatch = useDispatch();
     const [authors, setAuthors] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -20,7 +35,6 @@ const ManageAuthor = ({ setSpinning }) => {
 
     const fetchGetAuthors = async () => {
         try {
-            setLoading(true);
             const res = await getAuthorPagingService({ pageNumber: currentPage, pageSize: pageSize });
             setTotalPage(res?.data?.totalPage);
             setAuthors(
@@ -32,7 +46,6 @@ const ManageAuthor = ({ setSpinning }) => {
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false);
         }
     };
 
@@ -48,23 +61,6 @@ const ManageAuthor = ({ setSpinning }) => {
     const [showModalAddAuthor, setShowModalAddAuthor] = useState(false);
     const handleCloseModalAddAuthor = () => setShowModalAddAuthor(false);
     const handleShowModalAddAuthor = () => setShowModalAddAuthor(true);
-
-    const [authorAddInfo, setAuthorAddInfo] = useState({
-        fullName: '',
-    });
-
-    const handleSubmitAddAuthor = async () => {
-        try {
-            setSpinning(true);
-            await createAuthorService(authorAddInfo);
-            fetchGetAuthors();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            handleCloseModalAddAuthor();
-            setSpinning(false);
-        }
-    };
 
     // Update author
     const [showModalUpdateAuthor, setShowModalUpdateAuthor] = useState(false);
@@ -110,60 +106,88 @@ const ManageAuthor = ({ setSpinning }) => {
     };
     const handleCloseModalDeleteAuthor = () => setShowModalDeleteAuthor(false);
     const handleDeleteAuthor = async () => {
+        dispatch(setLoading(true));
         try {
-            setSpinning(true);
             await deleteAuthorService(authorInfoDelete?.id);
+            customToastify.success('Xóa thành công!');
             fetchGetAuthors();
         } catch (error) {
             console.log(error);
+            customToastify.success('Xóa thất bại!');
         } finally {
             setShowModalDeleteAuthor(false);
-            setSpinning(false);
+            dispatch(setLoading(false));
         }
     };
 
+    const columns = [
+        {
+            field: 'id',
+            headerName: 'Id',
+            flex: 0.2,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'name',
+            headerName: 'Tên tác giả',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'actions',
+            headerName: '',
+            flex: 0.2,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => (
+                <>
+                    <Button
+                        variant="text"
+                        color="warning"
+                        style={{ marginRight: 8 }}
+                        onClick={() => handleShowModalUpdateAuthor(params.row.id, params.row.name)}
+                    >
+                        <EditOutlinedIcon />
+                    </Button>
+                    <Button
+                        variant="text"
+                        color="error"
+                        onClick={() => handleShowModalDeleteAuthor(params.row.id, params.row.name)}
+                    >
+                        <DeleteOutlineOutlinedIcon />
+                    </Button>
+                </>
+            ),
+            sortable: false,
+        },
+    ];
+
     return (
         <div id="manage-authors">
-            <div className='text-end'>
+            <div className="text-end">
                 <button className="btn btn-primary fz-16 mb-3" onClick={handleShowModalAddAuthor}>
                     Thêm tác giả
                 </button>
             </div>
-            <div className="table-responsive d-flex justify-content-center">
-                <table className="table w-100 table-bordered">
-                    <thead>
-                        <tr>
-                            <th className='text-center'>Tên tác giả</th>
-                            <th className='text-center'></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {authors?.map((author) => {
-                            return (
-                                <tr key={`author-${author?.id}`}>
-                                    <td>{author?.name}</td>
-                                    <td className='text-center'>
-                                        <Button
-                                            className="fz-16 me-3"
-                                            variant="warning"
-                                            onClick={() => handleShowModalUpdateAuthor(author?.id, author?.name)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                        <Button
-                                            className="fz-16"
-                                            variant="danger"
-                                            onClick={() => handleShowModalDeleteAuthor(author?.id, author?.name)}
-                                        >
-                                            Xoá
-                                        </Button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
+
+            <Box sx={{ width: '100%' }}>
+                <DataGrid
+                    rows={authors.map((author) => ({ id: author.id, name: author.name }))}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    disableSelectionOnClick
+                    autoHeight
+                    sx={{
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f5f5f5',
+                        },
+                    }}
+                />
+            </Box>
+
             <Pagination className="d-flex justify-content-center">
                 {Array.from({ length: totalPage }, (_, i) => (i = i + 1))?.map((i) => {
                     return (
@@ -178,86 +202,146 @@ const ManageAuthor = ({ setSpinning }) => {
                     );
                 })}
             </Pagination>
-            <Modal show={showModalAddAuthor} onHide={handleCloseModalAddAuthor}>
-                <Modal.Header>
-                    <Modal.Title>Thêm tác giả</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group as={Row}>
-                            <Form.Label column sm="1">
-                                Tên
-                            </Form.Label>
-                            <Col sm="11">
-                                <Form.Control
-                                    value={authorAddInfo?.fullName}
-                                    onChange={(e) =>
-                                        setAuthorAddInfo({
-                                            ...authorAddInfo,
-                                            fullName: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Col>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalAddAuthor}>
-                        Huỷ
+
+            <Dialog
+                open={showModalAddAuthor}
+                onClose={handleCloseModalAddAuthor}
+                fullWidth
+                maxWidth="md"
+                PaperProps={{
+                    component: 'form',
+                    onSubmit: async (event) => {
+                        event.preventDefault();
+                        dispatch(setLoading(true));
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+                        const authorname = formJson.authorname;
+
+                        try {
+                            await createAuthorService({
+                                fullName: authorname,
+                            });
+
+                            customToastify.success('Thêm mới tác giả thành công!');
+                        } catch {
+                            customToastify.success('Thêm mới tác giả thất bại!');
+                            console.error('Có lỗi xảy ra');
+                        } finally {
+                            dispatch(setLoading(false));
+                            handleCloseModalAddAuthor();
+                        }
+                    },
+                }}
+            >
+                <DialogTitle>Thêm mới tác giả</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        id="authorname"
+                        name="authorname"
+                        label="Tác giả"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className="text-danger"
+                        color="danger"
+                        variant="outlined"
+                        onClick={handleCloseModalAddAuthor}
+                    >
+                        Hủy
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitAddAuthor}>
-                        Thêm
+                    <Button className="text-primary" color="primary" variant="outlined" type="submit">
+                        Lưu
                     </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showModalUpdateAuthor} onHide={handleCloseModalUpdateAuthor}>
-                <Modal.Header>
-                    <Modal.Title>Sửa tác giả</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group as={Row}>
-                            <Form.Label column sm="1">
-                                Tên
-                            </Form.Label>
-                            <Col sm="11">
-                                <Form.Control
-                                    value={authorUpdateInfo?.fullName}
-                                    onChange={(e) =>
-                                        setAuthorUpdateInfo({
-                                            ...authorUpdateInfo,
-                                            fullName: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Col>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateAuthor}>
-                        Huỷ
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={showModalUpdateAuthor}
+                onClose={handleCloseModalUpdateAuthor}
+                fullWidth
+                maxWidth="md"
+                PaperProps={{
+                    component: 'form',
+                    onSubmit: async (event) => {
+                        event.preventDefault();
+                        dispatch(setLoading(true));
+
+                        try {
+                            await updateAuthorService(authorUpdateInfo);
+                            customToastify.success('Cập nhật tác giả thành công!');
+                            fetchGetAuthors();
+                        } catch (error) {
+                            customToastify.error('Cập nhật tác giả thất bại!');
+                            console.error('Có lỗi xảy ra:', error);
+                        } finally {
+                            dispatch(setLoading(false));
+                            handleCloseModalUpdateAuthor();
+                        }
+                    },
+                }}
+            >
+                <DialogTitle>Cập nhật tác giả</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        id="authorname"
+                        name="authorname"
+                        label="Tên tác giả"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={authorUpdateInfo?.fullName}
+                        onChange={(e) =>
+                            setAuthorUpdateInfo({
+                                ...authorUpdateInfo,
+                                fullName: e.target.value,
+                            })
+                        }
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className="text-danger"
+                        color="danger"
+                        variant="outlined"
+                        onClick={handleCloseModalUpdateAuthor}
+                    >
+                        Hủy
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateAuthor}>
+                    <Button className="text-primary" color="primary" variant="outlined" type="submit">
                         Cập nhật
                     </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showModalDeleteAuthor} onHide={handleCloseModalDeleteAuthor}>
-                <Modal.Header>
-                    <Modal.Title>Xoá tác giả</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="fz-16">Bạn có chắc muốn xoá tác giả {authorInfoDelete?.name}</Modal.Body>
-                <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalDeleteAuthor}>
-                        Huỷ
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={showModalDeleteAuthor}
+                onClose={handleCloseModalDeleteAuthor}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{'Xóa tác giả?'}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Bạn có chắc muốn xoá tác giả {authorInfoDelete?.name}.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseModalDeleteAuthor}>Hủy</Button>
+                    <Button onClick={handleDeleteAuthor} autoFocus>
+                        Xóa
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleDeleteAuthor}>
-                        Xoá
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 };

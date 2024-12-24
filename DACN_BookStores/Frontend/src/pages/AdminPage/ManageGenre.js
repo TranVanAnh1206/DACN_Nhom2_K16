@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { Button, Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
+import { Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
 import {
     createGenreService,
     deleteGenreService,
@@ -8,10 +8,16 @@ import {
     updateGenreService,
 } from '~/services/genreService';
 import styles from './AdminPage.module.scss';
+import { useDispatch } from 'react-redux';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import { setLoading } from '~/redux/slices/loadingSlide';
+import customToastify from '~/utils/customToastify';
+import { DataGrid } from '@mui/x-data-grid';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const ManageGenre = ({ setSpinning }) => {
-    const [loading, setLoading] = useState(false);
-
+    const dispatch = useDispatch();
     const [genres, setGenres] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -19,7 +25,7 @@ const ManageGenre = ({ setSpinning }) => {
 
     const fetchGetGenres = async () => {
         try {
-            setLoading(true);
+            dispatch(setLoading(true));
             const res = await getGenrePagingService({ pageNumber: currentPage, pageSize: pageSize });
             setTotalPage(res?.data?.totalPage);
             setGenres(
@@ -31,7 +37,7 @@ const ManageGenre = ({ setSpinning }) => {
         } catch (error) {
             console.log(error);
         } finally {
-            setLoading(false);
+            dispatch(setLoading(false));
         }
     };
 
@@ -47,23 +53,6 @@ const ManageGenre = ({ setSpinning }) => {
     const [showModalAddGenre, setShowModalAddGenre] = useState(false);
     const handleCloseModalAddGenre = () => setShowModalAddGenre(false);
     const handleShowModalAddGenre = () => setShowModalAddGenre(true);
-
-    const [genreAddInfo, setGenreAddInfo] = useState({
-        name: '',
-    });
-
-    const handleSubmitAddGenre = async () => {
-        try {
-            setSpinning(true);
-            await createGenreService(genreAddInfo);
-            fetchGetGenres();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            handleCloseModalAddGenre();
-            setSpinning(false);
-        }
-    };
 
     // Update genre
     const [showModalUpdateGenre, setShowModalUpdateGenre] = useState(false);
@@ -83,15 +72,12 @@ const ManageGenre = ({ setSpinning }) => {
 
     const handleSubmitUpdateGenre = async () => {
         try {
-            setSpinning(true);
-
             await updateGenreService(genreUpdateInfo);
             fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseModalUpdateGenre();
-            setSpinning(false);
         }
     };
 
@@ -111,17 +97,58 @@ const ManageGenre = ({ setSpinning }) => {
     const handleCloseModalDeleteGenre = () => setShowModalDeleteGenre(false);
     const handleDeleteGenre = async () => {
         try {
-            setSpinning(true);
-
             await deleteGenreService(genreInfoDelete?.id);
             fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
             setShowModalDeleteGenre(false);
-            setSpinning(false);
         }
     };
+
+    const columns = [
+        {
+            field: 'id',
+            headerName: 'Id',
+            flex: 0.2,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'name',
+            headerName: 'Tên thể loại',
+            flex: 1,
+            headerAlign: 'center',
+            align: 'center',
+        },
+        {
+            field: 'actions',
+            headerName: '',
+            flex: 0.2,
+            headerAlign: 'center',
+            align: 'center',
+            renderCell: (params) => (
+                <>
+                    <Button
+                        variant="text"
+                        color="warning"
+                        style={{ marginRight: 8 }}
+                        onClick={() => handleShowModalUpdateGenre(params.row.id, params.row.name)}
+                    >
+                        <EditOutlinedIcon />
+                    </Button>
+                    <Button
+                        variant="text"
+                        color="error"
+                        onClick={() => handleShowModalDeleteGenre(params.row.id, params.row.name)}
+                    >
+                        <DeleteOutlineOutlinedIcon />
+                    </Button>
+                </>
+            ),
+            sortable: false,
+        },
+    ];
 
     return (
         <div id="manage-genres">
@@ -130,42 +157,25 @@ const ManageGenre = ({ setSpinning }) => {
                     Thêm thể loại
                 </button>
             </div>
-            <div className="table-responsive d-flex justify-content-center">
-                <table className="w-100 table table-bordered">
-                    <thead>
-                        <tr>
-                            <th className='text-center'>Tên thể loại</th>
-                            <th className='text-center'></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {genres?.map((genre) => {
-                            return (
-                                <tr key={`genre-${genre?.id}`}>
-                                    <td>{genre?.name}</td>
-                                    <td className='text-center'>
-                                        <Button
-                                            className="fz-16 me-3"
-                                            variant="warning"
-                                            onClick={() => handleShowModalUpdateGenre(genre?.id, genre?.name)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                        <Button
-                                            className="fz-16"
-                                            variant="danger"
-                                            onClick={() => handleShowModalDeleteGenre(genre?.id, genre?.name)}
-                                        >
-                                            Xoá
-                                        </Button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-            <Pagination className="d-flex justify-content-center">
+
+            <Box sx={{ width: '100%' }}>
+                <DataGrid
+                    rows={genres.map((g) => ({ id: g.id, name: g.name }))}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    disableSelectionOnClick
+                    autoHeight
+                    checkboxSelection
+                    sx={{
+                        '& .MuiDataGrid-columnHeaders': {
+                            backgroundColor: '#f5f5f5',
+                        },
+                    }}
+                />
+            </Box>
+
+            <Pagination className="d-flex justify-content-center mt-3">
                 {Array.from({ length: totalPage }, (_, i) => (i = i + 1))?.map((i) => {
                     return (
                         <Pagination.Item
@@ -179,72 +189,127 @@ const ManageGenre = ({ setSpinning }) => {
                     );
                 })}
             </Pagination>
-            <Modal show={showModalAddGenre} onHide={handleCloseModalAddGenre}>
-                <Modal.Header>
-                    <Modal.Title>Thêm thể loại</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group as={Row}>
-                            <Form.Label column sm="1">
-                                Tên
-                            </Form.Label>
-                            <Col sm="11">
-                                <Form.Control
-                                    value={genreAddInfo?.name}
-                                    onChange={(e) =>
-                                        setGenreAddInfo({
-                                            ...genreAddInfo,
-                                            name: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Col>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalAddGenre}>
-                        Huỷ
+
+            <Dialog
+                open={showModalAddGenre}
+                onClose={handleCloseModalAddGenre}
+                fullWidth
+                maxWidth="md"
+                PaperProps={{
+                    component: 'form',
+                    onSubmit: async (event) => {
+                        event.preventDefault();
+                        dispatch(setLoading(true));
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+                        const genrename = formJson.genrename;
+
+                        try {
+                            await createGenreService({
+                                name: genrename,
+                            });
+
+                            customToastify.success('Thêm mới thể loại thành công!');
+                        } catch {
+                            customToastify.success('Thêm mới thể loại thất bại!');
+                            console.error('Có lỗi xảy ra');
+                        } finally {
+                            dispatch(setLoading(false));
+                            handleCloseModalAddGenre();
+                        }
+                    },
+                }}
+            >
+                <DialogTitle>Thêm mới thể loại</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        id="genrename"
+                        name="genrename"
+                        label="Thể loại"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className="text-danger"
+                        color="danger"
+                        variant="outlined"
+                        onClick={handleCloseModalAddGenre}
+                    >
+                        Hủy
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitAddGenre}>
-                        Thêm
+                    <Button className="text-primary" color="primary" variant="outlined" type="submit">
+                        Lưu
                     </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showModalUpdateGenre} onHide={handleCloseModalUpdateGenre}>
-                <Modal.Header>
-                    <Modal.Title>Sửa thể loại</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group as={Row}>
-                            <Form.Label column sm="1">
-                                Tên
-                            </Form.Label>
-                            <Col sm="11">
-                                <Form.Control
-                                    value={genreUpdateInfo?.name}
-                                    onChange={(e) =>
-                                        setGenreUpdateInfo({
-                                            ...genreUpdateInfo,
-                                            name: e.target.value,
-                                        })
-                                    }
-                                />
-                            </Col>
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateGenre}>
-                        Huỷ
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={showModalUpdateGenre}
+                onClose={handleCloseModalUpdateGenre}
+                fullWidth
+                maxWidth="md"
+                PaperProps={{
+                    component: 'form',
+                    onSubmit: async (event) => {
+                        event.preventDefault();
+                        dispatch(setLoading(true));
+
+                        try {
+                            await updateGenreService(genreUpdateInfo);
+                            customToastify.success('Cập nhật thể loại thành công!');
+                            fetchGetGenres();
+                        } catch (error) {
+                            customToastify.error('Cập nhật thể loại thất bại!');
+                            console.error('Có lỗi xảy ra:', error);
+                        } finally {
+                            dispatch(setLoading(false));
+                            handleCloseModalUpdateGenre();
+                        }
+                    },
+                }}
+            >
+                <DialogTitle>Cập nhật thể loại</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        id="genrename"
+                        name="genrename"
+                        label="Tên thể loại"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={genreUpdateInfo?.name}
+                        onChange={(e) =>
+                            setGenreUpdateInfo({
+                                ...genreUpdateInfo,
+                                name: e.target.value,
+                            })
+                        }
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        className="text-danger"
+                        color="danger"
+                        variant="outlined"
+                        onClick={handleCloseModalUpdateGenre}
+                    >
+                        Hủy
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateGenre}>
+                    <Button className="text-primary" color="primary" variant="outlined" type="submit">
                         Cập nhật
                     </Button>
-                </Modal.Footer>
-            </Modal>
+                </DialogActions>
+            </Dialog>
+
             <Modal show={showModalDeleteGenre} onHide={handleCloseModalDeleteGenre}>
                 <Modal.Header>
                     <Modal.Title>Xoá thể loại</Modal.Title>
